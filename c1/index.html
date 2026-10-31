@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Streamyanka — концепт 1 «Сцена»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@200;300;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/base.css">
+<style>
+  /* ---------- экран 1: студия в глубину ---------- */
+  .hero {
+    position: relative; min-height: 100svh; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 0 96px; perspective: 900px;
+  }
+  .room { position: absolute; inset: 0; transform-style: preserve-3d; }
+  .layer { position: absolute; inset: -6%; transition: transform .5s cubic-bezier(.2,.7,.2,1); will-change: transform; }
+  .ring, .phone, .tripod, .float { inset: auto; }
+
+  /* «видео» на заднем плане: сюда встанет нарезка со стримов */
+  .footage {
+    background:
+      radial-gradient(60% 45% at 30% 35%, rgba(240,86,122,.30), transparent 70%),
+      radial-gradient(50% 40% at 75% 30%, rgba(111,140,255,.28), transparent 70%),
+      radial-gradient(80% 60% at 50% 100%, rgba(0,0,0,.9), transparent),
+      #0d0c12;
+    animation: drift 18s ease-in-out infinite alternate;
+    filter: blur(2px) saturate(1.1);
+  }
+  @keyframes drift { to { background-position: 40px -30px, -50px 20px, 0 0, 0 0; transform: scale(1.06); } }
+
+  /* пол и стены — перспективная сетка */
+  .floor {
+    top: 58%; bottom: -20%;
+    background:
+      linear-gradient(to bottom, var(--bg), transparent 30%),
+      repeating-linear-gradient(90deg, rgba(237,234,240,.07) 0 1px, transparent 1px 80px),
+      repeating-linear-gradient(0deg, rgba(237,234,240,.05) 0 1px, transparent 1px 80px);
+    transform: rotateX(72deg); transform-origin: top center;
+  }
+
+  /* кольцевая лампа */
+  .ring {
+    left: 50%; top: 13%; width: 280px; height: 280px; margin-left: -140px;
+    border-radius: 50%; border: 10px solid rgba(255,240,245,.85);
+    box-shadow: 0 0 60px 10px rgba(255,220,235,.35), inset 0 0 50px rgba(255,220,235,.25);
+    opacity: .55;
+  }
+
+  /* телефон на штативе — видео-визитка */
+  .phone {
+    left: 50%; top: 13%; width: 136px; aspect-ratio: 9 / 18; margin-left: -68px;
+    border-radius: 26px; padding: 6px; background: #1a1a22;
+    box-shadow: 0 40px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.08);
+  }
+  .phone .screen {
+    position: relative; width: 100%; height: 100%; border-radius: 21px; overflow: hidden;
+    background: linear-gradient(160deg, #2a1a24, #12131d 60%, #1a2133);
+  }
+  .phone .screen::after { content: ""; position: absolute; inset: 0; background: radial-gradient(70% 50% at 50% 40%, rgba(240,86,122,.35), transparent 70%); animation: pulse 5s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .4; } }
+  .phone .live { position: absolute; top: 12px; left: 10px; z-index: 2; font-size: 9px; padding: 3px 6px; }
+  .phone .play {
+    position: absolute; inset: 0; z-index: 2; margin: auto; width: 54px; height: 54px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.5); display: grid; place-items: center;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  }
+  .phone .play::before { content: ""; border-left: 14px solid #fff; border-top: 9px solid transparent; border-bottom: 9px solid transparent; margin-left: 4px; }
+  .phone .cap { position: absolute; bottom: 12px; left: 0; right: 0; z-index: 2; text-align: center; font-size: 10px; color: rgba(255,255,255,.7); }
+  .tripod { left: 50%; top: calc(13% + 272px); width: 2px; height: 40%; margin-left: -1px; background: linear-gradient(#2a2a33, transparent); }
+
+  /* плавающие элементы эфира */
+  .float {
+    padding: 8px 12px; border-radius: 12px; font-size: 12px;
+    background: rgba(18,18,24,.7); border: 1px solid var(--line);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    animation: bob 6s ease-in-out infinite;
+  }
+  .float b { color: var(--pink); font-weight: 600; }
+  .f1 { left: 6%; top: 34%; }
+  .f2 { right: 6%; top: 18%; animation-delay: -2s; }
+  .f3 { right: 8%; top: 44%; animation-delay: -4s; }
+  @keyframes bob { 50% { translate: 0 -10px; } }
+
+  .hero-text { position: relative; z-index: 5; text-align: center; }
+  .hero h1 {
+    margin: 0; font-family: "Inter Tight", sans-serif; font-weight: 200;
+    font-size: clamp(44px, 13vw, 168px); line-height: .9; letter-spacing: -.02em;
+    text-shadow: 0 10px 50px rgba(0,0,0,.6);
+  }
+  .hero h1 span { color: var(--pink); font-weight: 300; }
+  .side { display: none; }
+  .hero p { margin: 18px auto 26px; max-width: 30ch; color: rgba(237,234,240,.78); font-size: 15px; }
+  .hero p u { text-decoration-color: var(--pink); text-underline-offset: 4px; }
+  .cta { display: flex; flex-direction: column; gap: 10px; max-width: 320px; margin: 0 auto; }
+  .scroll-hint { position: absolute; left: 50%; bottom: 74px; z-index: 5; width: 1px; height: 36px; background: linear-gradient(var(--text), transparent); opacity: .4; display: none; }
+
+  /* ---------- экран 2: что такое стримы ---------- */
+  .what { padding: 96px 0 140px; position: relative; }
+  .eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .what h2 { margin: 12px 0 32px; font-family: "Inter Tight", sans-serif; font-weight: 300; font-size: clamp(32px, 8vw, 72px); line-height: 1; letter-spacing: -.02em; }
+  .what-grid { display: grid; gap: 28px; }
+  .what-grid > div { order: -1; }
+  .video-card {
+    position: relative; aspect-ratio: 4 / 5; border-radius: var(--radius); overflow: hidden;
+    background: linear-gradient(200deg, #1b1622, #0f1220);
+    transform: perspective(1000px) rotateY(var(--ry, 0deg)) rotateX(var(--rx, 0deg));
+    transition: transform .4s ease;
+    box-shadow: 0 30px 80px rgba(0,0,0,.5);
+  }
+  .video-card .footage { position: absolute; inset: 0; }
+  .video-card .play { position: absolute; inset: 0; margin: auto; width: 76px; height: 76px; border-radius: 50%; border: 1px solid rgba(255,255,255,.5); display: grid; place-items: center; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .video-card .play::before { content: ""; border-left: 18px solid #fff; border-top: 11px solid transparent; border-bottom: 11px solid transparent; margin-left: 5px; }
+  .video-card figcaption { position: absolute; left: 18px; bottom: 16px; right: 18px; font-size: 13px; color: rgba(255,255,255,.75); display: flex; justify-content: space-between; }
+
+  .lead { font-size: 20px; line-height: 1.4; margin: 0 0 16px; font-weight: 500; }
+  .body { color: rgba(237,234,240,.72); margin: 0 0 28px; }
+
+  .mechanics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .mech {
+    text-align: left; padding: 16px; border-radius: 14px; border: 1px solid var(--line);
+    background: rgba(255,255,255,.02); transition: border-color .2s, background .2s;
+    min-height: 92px; display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .mech .n { font-size: 12px; color: var(--muted); }
+  .mech .t { font-weight: 600; }
+  .mech .d { display: none; font-size: 13px; color: rgba(237,234,240,.7); margin-top: 6px; }
+  .mech[aria-pressed="true"] { border-color: var(--pink); background: rgba(240,86,122,.07); grid-column: span 2; }
+  .mech[aria-pressed="true"] .d { display: block; }
+
+  @media (min-width: 900px) {
+    .hero { padding: 0 0 80px; }
+    .ring { width: 440px; height: 440px; margin-left: -220px; top: 6%; }
+    .phone { width: 150px; margin-left: -75px; top: 11%; }
+    .tripod { top: calc(11% + 300px); }
+    .side { display: block; position: absolute; top: 50%; font-family: "Inter Tight"; font-weight: 300; font-size: 18px; letter-spacing: .2em; color: var(--muted); }
+    .side.l { left: 40px; } .side.r { right: 40px; }
+    .cta { flex-direction: row; justify-content: center; max-width: none; }
+    .scroll-hint { display: block; }
+    .what-grid { grid-template-columns: 5fr 6fr; gap: 80px; align-items: center; }
+    .what-grid > div { order: 0; }
+    .lead { font-size: 26px; }
+    .mech[aria-pressed="true"] { grid-column: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="brand" href="../"><img src="../assets/logo.svg" alt="">Streamyanka</a>
+  <nav class="nav"><a href="#what">О нас</a><a href="#">Направления</a><a href="#">Отзывы</a><a href="#">Контакты</a></nav>
+  <a class="btn btn-ghost" style="min-height:40px;padding:0 18px;font-size:13px" href="#">Заявка</a>
+</header>
+
+<section class="hero" id="hero">
+  <div class="room">
+    <div class="layer footage" data-depth="4"></div>
+    <div class="grain"></div>
+    <div class="layer floor" data-depth="10"></div>
+    <div class="layer ring" data-depth="14"></div>
+    <div class="layer tripod" data-depth="22"></div>
+    <div class="layer phone" data-depth="22">
+      <div class="screen">
+        <span class="live">Live</span>
+        <button class="play" aria-label="Смотреть видео-визитку"></button>
+        <span class="cap">видео-визитка</span>
+      </div>
+    </div>
+    <div class="layer float f1" data-depth="34">👀 <b>1 248</b> зрителей</div>
+    <div class="layer float f2" data-depth="30">🎁 подарок от <b>@marina</b></div>
+    <div class="layer float f3" data-depth="38">⚔️ баттл <b>2:14</b></div>
+  </div>
+
+  <span class="side l">PRACTICUM</span>
+  <span class="side r">AGENCY</span>
+
+  <div class="hero-text wrap">
+    <h1>Stream<span>yanka</span></h1>
+    <p>Это <u>практикум</u> и агентство для TikTok-стримеров. Помогаем начать с нуля, выйти на первые результаты и расти дальше.</p>
+    <div class="cta">
+      <a class="btn btn-main" href="#">Оставить заявку</a>
+      <a class="btn btn-ghost" href="#what">Что такое стримы</a>
+    </div>
+  </div>
+  <span class="scroll-hint"></span>
+</section>
+
+<section class="what" id="what">
+  <div class="wrap what-grid">
+    <figure class="video-card" id="tilt" style="margin:0">
+      <div class="footage"></div>
+      <div class="grain"></div>
+      <button class="play" aria-label="Смотреть видео"></button>
+      <figcaption><span>Никита про стримы</span><span>2:40</span></figcaption>
+    </figure>
+
+    <div>
+      <span class="eyebrow">01 — Что такое TikTok-стримы</span>
+      <h2>Прямой эфир, который становится работой</h2>
+      <p class="lead">TikTok-стримы — это прямые эфиры внутри TikTok.</p>
+      <p class="body">Стример общается со зрителями, набирает аудиторию, получает подарки, участвует в баттлах и развивает личный бренд. Для новичка это точка входа в онлайн-заработок: сначала осваиваешь механику, потом растёшь по просмотрам, подписчикам и доходу.</p>
+
+      <div class="mechanics" role="group" aria-label="Механики эфира">
+        <button class="mech" aria-pressed="true"><span class="n">01</span><span><span class="t">Общение</span><span class="d">Зрители приходят за живым диалогом, а не за картинкой. С этого начинается аудитория.</span></span></button>
+        <button class="mech" aria-pressed="false"><span class="n">02</span><span><span class="t">Подарки</span><span class="d">Зрители отправляют подарки во время эфира — они конвертируются в доход стримера.</span></span></button>
+        <button class="mech" aria-pressed="false"><span class="n">03</span><span><span class="t">Баттлы</span><span class="d">Соревнование двух эфиров в реальном времени: больше вовлечения, больше подарков.</span></span></button>
+        <button class="mech" aria-pressed="false"><span class="n">04</span><span><span class="t">Бренд</span><span class="d">Регулярные эфиры превращаются в узнаваемое имя, с которым приходят партнёрства.</span></span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<nav class="concept-tag" aria-label="Концепты">
+  <a href="../c1/" aria-current="page">1 · Сцена</a><a href="../c2/">2 · Эфир</a><a href="../c3/">3 · Ступени</a>
+</nav>
+
+<script>
+  // глубина: слои смещаются за курсором или наклоном телефона
+  const layers = [...document.querySelectorAll('.layer[data-depth]')];
+  const move = (x, y) => layers.forEach(l => {
+    const d = +l.dataset.depth;
+    l.style.transform = `translate3d(${x * d}px, ${y * d}px, 0)`;
+  });
+  addEventListener('pointermove', e => {
+    if (e.pointerType !== 'mouse') return;
+    move(e.clientX / innerWidth - .5, e.clientY / innerHeight - .5);
+  });
+  addEventListener('deviceorientation', e => {
+    if (e.gamma == null) return;
+    move(Math.max(-1, Math.min(1, e.gamma / 30)) * .5, Math.max(-1, Math.min(1, (e.beta - 45) / 30)) * .5);
+  });
+
+  // наклон карточки видео
+  const card = document.getElementById('tilt');
+  card.addEventListener('pointermove', e => {
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--ry', ((e.clientX - r.left) / r.width - .5) * 10 + 'deg');
+    card.style.setProperty('--rx', -((e.clientY - r.top) / r.height - .5) * 10 + 'deg');
+  });
+  card.addEventListener('pointerleave', () => { card.style.setProperty('--ry', '0deg'); card.style.setProperty('--rx', '0deg'); });
+
+  // механики: раскрывается одна
+  const mechs = document.querySelectorAll('.mech');
+  mechs.forEach(m => m.addEventListener('click', () => mechs.forEach(o => o.setAttribute('aria-pressed', o === m))));
+</script>
+</body>
+</html>
