@@ -3,26 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Streamyanka — концепты</title>
+<title>Стремянка — концепции сайта</title>
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="assets/base.css">
 <style>
-  main.wrap { padding-top: 110px; padding-bottom: 80px; }
-  h1 { margin: 0 0 12px; font-size: clamp(30px, 7vw, 56px); line-height: 1.05; letter-spacing: -.02em; font-weight: 500; }
-  .sub { color: var(--muted); max-width: 56ch; margin: 0 0 40px; }
+  main.wrap { padding-top: 112px; padding-bottom: 80px; }
+  h1 { margin: 0 0 40px; font-size: 32px; line-height: 1.08; letter-spacing: -.02em; font-weight: 500; }
   .list { display: grid; gap: 12px; }
   .card {
-    display: grid; gap: 8px; padding: 24px; border-radius: 16px;
+    display: grid; gap: 24px; align-content: space-between; padding: 24px; border-radius: 16px;
     border: 1px solid var(--line); background: var(--card);
     transition: background-color .16s var(--ease), border-color .16s var(--ease);
   }
   .card:hover { background: var(--raised); border-color: var(--line-strong); }
-  .card .n { font-size: 13px; color: var(--muted); }
-  .card h2 { margin: 0; font-size: 24px; font-weight: 500; }
-  .card p { margin: 0; color: var(--text-2); font-size: 15px; }
-  .card .go { margin-top: 8px; font-weight: 600; color: var(--pink); display: inline-flex; align-items: center; gap: 8px; }
-  .foot { margin-top: 40px; font-size: 14px; color: var(--muted); max-width: 60ch; }
-  @media (min-width: 900px) { .list { grid-template-columns: repeat(3, 1fr); } .card { min-height: 260px; align-content: start; } .card .go { margin-top: auto; } }
+  .card .n { font-size: 56px; line-height: 1; font-weight: 500; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .card .btn { justify-self: start; }
+  @media (min-width: 900px) {
+    h1 { font-size: 56px; margin-bottom: 48px; }
+    .list { grid-template-columns: repeat(3, 1fr); }
+    .card { min-height: 280px; padding: 32px; }
+    .card .n { font-size: 88px; }
+  }
 </style>
 </head>
 <body>
@@ -31,31 +32,13 @@
 </header>
 
 <main class="wrap">
-  <h1>Три концепта первого и второго экрана</h1>
-  <p class="sub">Тёмная база, фирменные розовый и голубой — только акцентами. Удобнее смотреть с телефона: сайт собирается mobile first.</p>
+  <h1>Концепции для сайта агентства «Стремянка»</h1>
 
   <div class="list">
-    <a class="card" href="c1/">
-      <span class="n">Концепт 1</span>
-      <h2>Сцена</h2>
-      <p>Глубина и объём: эфир показан «со стороны» — студия, кольцевая лампа, телефон на штативе. Слои двигаются за курсором или наклоном телефона.</p>
-      <span class="go">Смотреть <svg class="icon"><use href="assets/icons.svg#arrow-right"/></svg></span>
-    </a>
-    <a class="card" href="c2/">
-      <span class="n">Концепт 2</span>
-      <h2>Эфир</h2>
-      <p>Максимум видео: на фоне стена из записей эфиров. На втором экране можно самому отправить подарки и увидеть, как растёт эфир.</p>
-      <span class="go">Смотреть <svg class="icon"><use href="assets/icons.svg#arrow-right"/></svg></span>
-    </a>
-    <a class="card" href="c3/">
-      <span class="n">Концепт 3</span>
-      <h2>Ступени</h2>
-      <p>Идея из названия и логотипа: путь стримера — подъём по ступеням. Спокойнее и строже двух других, опора на бренд.</p>
-      <span class="go">Смотреть <svg class="icon"><use href="assets/icons.svg#arrow-right"/></svg></span>
-    </a>
+    <a class="card" href="c1/"><span class="n">№ 1</span><span class="btn btn-main">Смотреть</span></a>
+    <a class="card" href="c2/"><span class="n">№ 2</span><span class="btn btn-main">Смотреть</span></a>
+    <a class="card" href="c3/"><span class="n">№ 3</span><span class="btn btn-main">Смотреть</span></a>
   </div>
-
-  <p class="foot">На первых экранах — настоящие записи эфиров. Видео-визитку и ролик Никиты добавим, когда они будут готовы. Тексты по прототипу, пока не финальные.</p>
 </main>
 </body>
 </html>
