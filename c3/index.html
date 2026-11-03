@@ -9,98 +9,56 @@
 <style>
   body { font-family: "Onest", system-ui, sans-serif; }
 
-  /* ---------- экран 1: объёмная лестница ---------- */
-  .hero { position: relative; min-height: 100svh; overflow: hidden; display: grid; grid-template-rows: auto 1fr; padding: 64px 0 96px; }
-  .hero::before {
-    content: ""; position: absolute; inset: -20%; pointer-events: none;
+  /* ---------- экран 1: треугольник логотипа со ступенями ---------- */
+  .hero { position: relative; min-height: 100svh; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 0 92px; }
+
+  .bg {
+    position: absolute; inset: 0;
     background:
-      radial-gradient(30% 26% at 55% 28%, rgba(240,86,122,.32), transparent 70%),
-      radial-gradient(26% 24% at 78% 46%, rgba(111,140,255,.28), transparent 70%),
-      radial-gradient(34% 30% at 30% 60%, rgba(150,90,200,.14), transparent 70%);
-    animation: glow 16s ease-in-out infinite alternate;
+      radial-gradient(50% 40% at 50% 30%, rgba(240,86,122,.22), transparent 70%),
+      radial-gradient(40% 35% at 80% 70%, rgba(111,140,255,.18), transparent 70%),
+      var(--bg);
   }
-  @keyframes glow {
-    50% { transform: translate(-6%, 4%) scale(1.12) rotate(5deg); }
-    to { transform: translate(5%, -4%) scale(1.04) rotate(-4deg); }
+  .tri {
+    position: absolute; left: 50%; top: 9%; width: min(88vw, 620px); aspect-ratio: 1.1 / 1; transform: translateX(-50%);
+    clip-path: polygon(50% 0, 100% 100%, 0 100%); overflow: hidden;
+    background: linear-gradient(170deg, #2a1824, #11131d 60%, #172036);
   }
+  .tri::before { content: ""; position: absolute; inset: 0; background: radial-gradient(40% 30% at 50% 55%, rgba(240,86,122,.5), transparent 70%); animation: breathe 6s ease-in-out infinite; }
+  @keyframes breathe { 50% { transform: scale(1.2) translateY(-6%); opacity: .6; } }
+  .tri .live { position: absolute; left: 50%; top: 38%; transform: translateX(-50%); }
 
-  .stage { position: relative; z-index: 1; height: 420px; }
-  .persp { position: absolute; inset: 0; perspective: 1300px; perspective-origin: 50% 40%; transform: scale(.62); }
-
-  /* сцена: стремянка из логотипа в 3D, подарки вокруг в той же глубине */
-  @property --sway { syntax: "<angle>"; inherits: true; initial-value: 0deg; }
-  .scene3d {
-    --px: 0deg; --py: 0deg; --tilt: -14deg;
-    position: absolute; left: 50%; top: 50%; width: 0; height: 0;
-    transform-style: preserve-3d;
-    transform: rotateX(calc(var(--tilt) + var(--py))) rotateY(calc(var(--sway) + var(--px)));
-    animation: sway 12s ease-in-out infinite alternate;
+  .steps { position: absolute; left: 50%; top: 9%; width: min(88vw, 620px); aspect-ratio: 1.1 / 1; transform: translateX(-50%); pointer-events: none; }
+  .steps i {
+    position: absolute; left: 50%; height: 4.5%; border-radius: 3px; transform: translateX(-50%) scaleX(0);
+    background: var(--text); box-shadow: 0 6px 18px rgba(0,0,0,.5);
+    animation: bar .7s cubic-bezier(.2,.8,.2,1) forwards;
   }
-  @keyframes sway { from { --sway: -24deg; } to { --sway: 24deg; } }
+  .steps i:nth-child(1) { top: 52%; width: 22%; background: var(--pink); box-shadow: 0 0 30px rgba(240,86,122,.6); animation-delay: 1.1s; }
+  .steps i:nth-child(2) { top: 66%; width: 36%; animation-delay: .8s; }
+  .steps i:nth-child(3) { top: 80%; width: 50%; animation-delay: .5s; }
+  @keyframes bar { to { transform: translateX(-50%) scaleX(1); } }
 
-  /* коробка: шесть граней вокруг центра */
-  .box { position: absolute; transform-style: preserve-3d; }
-  .box > i { position: absolute; left: 50%; top: 50%; backface-visibility: hidden; }
-  .box .f  { width: var(--w); height: var(--h); margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2); transform: translateZ(calc(var(--d) / 2)); }
-  .box .bk { width: var(--w); height: var(--h); margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2); transform: rotateY(180deg) translateZ(calc(var(--d) / 2)); }
-  .box .l  { width: var(--d); height: var(--h); margin: calc(var(--h) / -2) 0 0 calc(var(--d) / -2); transform: rotateY(-90deg) translateZ(calc(var(--w) / 2)); }
-  .box .r  { width: var(--d); height: var(--h); margin: calc(var(--h) / -2) 0 0 calc(var(--d) / -2); transform: rotateY(90deg) translateZ(calc(var(--w) / 2)); }
-  .box .t  { width: var(--w); height: var(--d); margin: calc(var(--d) / -2) 0 0 calc(var(--w) / -2); transform: rotateX(90deg) translateZ(calc(var(--h) / 2)); }
-  .box .b  { width: var(--w); height: var(--d); margin: calc(var(--d) / -2) 0 0 calc(var(--w) / -2); transform: rotateX(-90deg) translateZ(calc(var(--h) / 2)); }
-
-  /* светлый «перламутр», как белые части логотипа */
-  .box .f  { background: linear-gradient(180deg, #fbf7f9, #d8cfd5); box-shadow: inset 0 0 0 1px rgba(255,255,255,.5); }
-  .box .t  { background: linear-gradient(180deg, #ffffff, #e9e2e7); }
-  .box .l, .box .r { background: linear-gradient(180deg, #a59ba2, #6f666d); }
-  .box .bk, .box .b { background: #4d464c; }
-  .box.pink .f { background: linear-gradient(180deg, #ff8aa5, #e0446a); box-shadow: inset 0 0 0 1px rgba(255,255,255,.35), 0 0 70px rgba(240,86,122,.6); }
-  .box.pink .t { background: #ffa3b8; }
-  .box.pink .l, .box.pink .r { background: linear-gradient(180deg, #c23a5c, #8a2442); }
-  .box.pink .bk, .box.pink .b { background: #6e1c33; }
-  .box .f span { position: absolute; inset: 0; display: grid; place-items: center; font-size: 16px; font-weight: 500; color: #2a2329; white-space: nowrap; }
-  .box.pink .f span { color: #fff; }
-
-  /* сборка на загрузке: опоры вырастают, перекладины выезжают из глубины */
-  .leg { animation: leg 1.1s var(--ease) both; }
-  @keyframes leg { from { opacity: 0; transform: var(--pos) scaleY(.05); } }
-  .rung { animation: rung 1s var(--ease) both; animation-delay: calc(.5s + var(--n) * .14s); }
-  @keyframes rung { from { opacity: 0; transform: var(--pos) translateZ(-260px); } }
-  .rung.pink { animation: rung 1s var(--ease) both, beat 3.2s ease-in-out 2s infinite; animation-delay: calc(.5s + var(--n) * .14s), 2.2s; }
-  @keyframes beat { 50% { transform: var(--pos) translateZ(14px); } }
-
-  .shadow3d { position: absolute; left: -300px; top: 190px; width: 600px; height: 260px; transform: rotateX(90deg); background: radial-gradient(closest-side, rgba(0,0,0,.6), transparent); }
-
-  /* подарки TikTok в той же глубине, всегда смотрят на зрителя */
-  .gift3d {
-    position: absolute; width: var(--s); height: var(--s); margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
-    transform: translate3d(var(--x), var(--y), var(--z)) rotateY(calc((var(--sway) + var(--px)) * -1)) rotateX(calc((var(--tilt) + var(--py)) * -1));
-    animation: pop .9s var(--ease) both; animation-delay: calc(1s + var(--n) * .08s);
+  /* подарки TikTok летают вокруг треугольника, дальние размыты */
+  .gifts { position: absolute; left: 50%; top: 9%; width: min(88vw, 620px); aspect-ratio: 1.1 / 1; transform: translateX(-50%); pointer-events: none; }
+  .gift {
+    position: absolute; width: var(--s); height: var(--s); left: var(--x); top: var(--y);
+    transition: translate .6s var(--ease); animation: pop .8s var(--ease) both; animation-delay: calc(1.2s + var(--n) * .08s);
   }
-  @keyframes pop { from { opacity: 0; } }
-  .gift3d img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 18px 24px rgba(0,0,0,.45)); animation: float 7s ease-in-out infinite; animation-delay: calc(var(--n) * -.9s); }
-  .gift3d.far img { filter: blur(1.5px) drop-shadow(0 12px 18px rgba(0,0,0,.4)) brightness(.8); }
+  @keyframes pop { from { opacity: 0; transform: scale(.6); } }
+  .gift img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 16px 22px rgba(0,0,0,.45)); animation: float 7s ease-in-out infinite; animation-delay: calc(var(--n) * -.9s); }
+  .gift.far img { filter: blur(1.5px) brightness(.8) drop-shadow(0 10px 16px rgba(0,0,0,.4)); }
   @keyframes float { 50% { transform: translateY(-14px) rotate(6deg); } }
-  @media (max-width: 899px) { .gift3d.desk { display: none; } }
+  @media (max-width: 899px) { .gift { width: calc(var(--s) * .6); height: calc(var(--s) * .6); } }
 
-  /* плашки событий эфира поверх сцены */
-  .chip {
-    position: absolute; z-index: 2; display: flex; align-items: center; gap: 6px;
-    padding: 8px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; white-space: nowrap;
-    background: rgba(25,22,26,.72); border: 1px solid var(--line-strong);
-    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    animation: bob 6s ease-in-out infinite; transition: translate .6s var(--ease);
-  }
-  .chip b { color: var(--pink); font-weight: 600; }
-  .ch1 { left: 4%; top: 10%; }
-  .ch2 { right: 0; top: 86%; animation-delay: -2s; }
-  .ch3 { right: 10%; top: 4%; animation-delay: -4s; }
-  @keyframes bob { 50% { transform: translateY(-10px); } }
+  .hero-inner { position: relative; z-index: 3; }
+  .hero h1 { margin: 0; font-weight: 700; font-size: clamp(40px, 12vw, 120px); line-height: .95; letter-spacing: -.035em; }
+  .hero h1 span { display: block; font-weight: 300; color: var(--muted); font-size: .42em; letter-spacing: -.01em; margin-top: 10px; }
+  .hero p { margin: 18px 0 24px; max-width: 36ch; color: rgba(237,234,240,.78); }
+  .cta { display: flex; flex-direction: column; gap: 10px; }
 
-  .hero-inner { position: relative; z-index: 3; align-self: end; }
-  .hero h1 { margin: 0; font-weight: 500; font-size: 44px; line-height: 1.02; letter-spacing: -.03em; }
-  .hero h1 span { display: block; margin-top: 8px; font-weight: 400; font-size: 22px; line-height: 1.25; letter-spacing: -.01em; color: var(--text-2); }
-  .hero .lead { margin: 16px 0 24px; max-width: 36rem; color: var(--text-2); }
-  .cta { display: grid; gap: 8px; }
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .tags span { font-size: 12px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line-strong); color: rgba(237,234,240,.8); }
 
   /* ---------- экран 2: путь по ступеням ---------- */
   .path { padding: 64px 0 128px; }
@@ -139,14 +97,10 @@
   .phone video { width: 100%; height: 100%; object-fit: cover; border-radius: 30px; }
 
   @media (min-width: 900px) {
-    .hero { grid-template-rows: none; grid-template-columns: 1fr 1.1fr; align-items: center; gap: 32px; padding: 80px max(var(--gutter), calc((100vw - 1280px) / 2 + var(--gutter))) 64px; }
-    .hero-inner { grid-column: 1; grid-row: 1; align-self: center; padding: 0; }
-    .stage { grid-column: 2; grid-row: 1; height: 640px; }
-    .persp { transform: none; }
-    .hero h1 { font-size: 72px; }
-    .hero h1 span { font-size: 28px; }
-    .hero .lead { font-size: 18px; }
-    .cta { display: flex; }
+    .hero { justify-content: center; padding: 0; }
+    .tri, .steps, .gifts { left: auto; right: 4%; top: 50%; transform: translateY(-46%); width: min(46vw, 640px); aspect-ratio: 1.1 / 1; }
+    .hero-inner > div { max-width: 560px; }
+    .cta { flex-direction: row; }
     .path h2 { font-size: 52px; }
     .path-grid { grid-template-columns: 1fr 280px; gap: 80px; align-items: stretch; }
     .path-text .ladder-wrap { flex: 1; display: flex; flex-direction: column; }
@@ -166,19 +120,20 @@
 </header>
 
 <section class="hero">
-  <div class="stage" aria-hidden="true">
-    <div class="persp"><div class="scene3d" id="scene3d"></div></div>
-    <div class="chip ch1" data-depth="18">Роза от <b>katya</b></div>
-    <div class="chip ch2" data-depth="24">1 248 зрителей</div>
-    <div class="chip ch3" data-depth="14">Баттл <b>2:14</b></div>
-  </div>
+  <div class="bg"></div>
+  <div class="tri" aria-hidden="true"><span class="live">Live</span></div>
+  <div class="steps" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="gifts" id="gifts" aria-hidden="true"></div>
 
   <div class="wrap hero-inner">
-    <h1 class="rise">Streamyanka<span>практикум и агентство для TikTok-стримеров</span></h1>
-    <p class="lead rise">Помогаем начать с нуля, выйти на первые результаты и расти дальше через агентство</p>
-    <div class="cta rise">
-      <a class="btn btn-main" href="#">Оставить заявку</a>
-      <a class="btn btn-ghost" href="#path">Как это устроено</a>
+    <div>
+      <div class="tags"><span>Практикум</span><span>Агентство</span></div>
+      <h1>Streamyanka<span>ступени роста в TikTok-эфирах</span></h1>
+      <p>Помогаем начать с нуля, выйти на первые результаты и расти дальше через агентство</p>
+      <div class="cta">
+        <a class="btn btn-main" href="#">Оставить заявку</a>
+        <a class="btn btn-ghost" href="#path">Как это устроено</a>
+      </div>
     </div>
   </div>
 </section>
@@ -212,47 +167,25 @@
 </nav>
 
 <script>
-  // стремянка из логотипа: две опоры буквы «А» и перекладины, верхняя розовая
-  const scene = document.getElementById('scene3d');
-  const H = 440, B = 240, T = 50, D = 72;            // высота, полуширина основания, толщина и глубина опор
-  const box = (cls, w, h, d, pos, label = '', vars = '') => {
-    const el = document.createElement('div');
-    el.className = 'box ' + cls;
-    el.style.cssText = `--w:${w}px;--h:${h}px;--d:${d}px;--pos:${pos};transform:${pos};${vars}`;
-    el.innerHTML = `<i class="bk"></i><i class="b"></i><i class="l"></i><i class="r"></i><i class="t"></i><i class="f">${label ? `<span>${label}</span>` : ''}</i>`;
-    scene.appendChild(el);
-  };
-  const L = Math.hypot(H, B), th = Math.atan(B / H) * 180 / Math.PI;
-  box('leg', T, L, D, `translate3d(${-B / 2}px,0,0) rotateZ(${th}deg)`);
-  box('leg', T, L, D, `translate3d(${B / 2}px,0,0) rotateZ(${-th}deg)`);
-  const bars = [[.92, 'Старт'], [.76, 'Первый эфир'], [.60, 'Доход'], [.44, 'Агентство']];
-  bars.forEach(([f, label], n) => {
-    const w = 2 * B * f - T * 1.3, y = -H / 2 + H * f;
-    box('rung' + (n === bars.length - 1 ? ' pink' : ''), w, 40, D - 16, `translate3d(0,${y}px,0)`, label, `--n:${n}`);
-  });
-  const shadow = document.createElement('i'); shadow.className = 'shadow3d'; scene.prepend(shadow);
-
-  // подарки: x, y, z, размер; дальние чуть размыты
+  // подарки вокруг треугольника: позиция в % от блока, размер, глубина для параллакса; дальние размыты
+  const giftsEl = document.getElementById('gifts');
   const gifts = [
-    ['lion', -300, 150, 140, 160], ['rose', 250, -180, 90, 104], ['perfume', 300, 90, -180, 124],
-    ['heart', -240, -170, -60, 80], ['note', 90, -300, -240, 92], ['like', -280, -290, -300, 76],
-    ['hearts', 250, 250, 180, 108], ['star', -110, -320, 150, 76], ['rose-kiss', -30, 300, 230, 96, 'desk'],
+    ['lion', -14, 62, 150, 30], ['rose', 82, 4, 100, 22], ['perfume', 88, 48, 116, -10],
+    ['heart', 4, 10, 76, 14], ['note', 54, -10, 88, -14], ['like', 70, 22, 64, -18],
+    ['hearts', 80, 82, 104, 26], ['star', 28, -6, 72, 18], ['rose-kiss', 40, 92, 92, 24],
   ];
-  gifts.forEach(([name, x, y, z, size, only = ''], n) => {
+  gifts.forEach(([name, x, y, size, depth], n) => {
     const g = document.createElement('div');
-    g.className = 'gift3d' + (z < -100 ? ' far' : '') + (only ? ' ' + only : '');
-    g.style.cssText = `--x:${x}px;--y:${y}px;--z:${z}px;--s:${size}px;--n:${n}`;
+    g.className = 'gift' + (depth < 0 ? ' far' : '');
+    g.dataset.depth = depth;
+    g.style.cssText = `--x:${x}%;--y:${y}%;--s:${size}px;--n:${n}`;
     g.innerHTML = `<img src="../assets/gifts/${name}.png" alt="">`;
-    scene.appendChild(g);
+    giftsEl.appendChild(g);
   });
 
-  // поворот за курсором или наклоном телефона, плашки смещаются в глубину
-  const chips = [...document.querySelectorAll('.chip[data-depth]')];
-  const tilt = (x, y) => {
-    scene.style.setProperty('--px', x * 30 + 'deg');
-    scene.style.setProperty('--py', -y * 14 + 'deg');
-    chips.forEach(c => c.style.translate = `${x * c.dataset.depth}px ${y * c.dataset.depth}px`);
-  };
+  // подарки смещаются за курсором или наклоном телефона: ближние сильнее, дальние в обратную сторону
+  const giftEls = [...giftsEl.children];
+  const tilt = (x, y) => giftEls.forEach(g => g.style.translate = `${x * g.dataset.depth}px ${y * g.dataset.depth}px`);
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
     addEventListener('pointermove', e => { if (e.pointerType === 'mouse') tilt(e.clientX / innerWidth - .5, e.clientY / innerHeight - .5); });
     addEventListener('deviceorientation', e => { if (e.gamma != null) tilt(Math.max(-.5, Math.min(.5, e.gamma / 50)), Math.max(-.5, Math.min(.5, (e.beta - 45) / 50))); });
