@@ -24,78 +24,77 @@
     to { transform: translate(5%, -4%) scale(1.04) rotate(-4deg); }
   }
 
-  .stage { position: relative; z-index: 1; height: 400px; }
-  .persp { position: absolute; inset: 0; perspective: 1400px; perspective-origin: 50% 20%; transform: scale(.66); }
+  .stage { position: relative; z-index: 1; height: 420px; }
+  .persp { position: absolute; inset: 0; perspective: 1300px; perspective-origin: 50% 40%; transform: scale(.62); }
 
-  @property --sway { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
-  .stair {
-    --run: 76px; --d: 180px; --rise: 40px;
-    position: absolute; left: 50%; top: 58%;
-    width: calc(var(--run) * 5); height: var(--d);
-    margin-left: calc(var(--run) * -2.5); margin-top: calc(var(--d) / -2);
+  /* сцена: стремянка из логотипа в 3D, подарки вокруг в той же глубине */
+  @property --sway { syntax: "<angle>"; inherits: true; initial-value: 0deg; }
+  .scene3d {
+    --px: 0deg; --py: 0deg; --tilt: -14deg;
+    position: absolute; left: 50%; top: 50%; width: 0; height: 0;
     transform-style: preserve-3d;
-    transform: rotateX(calc(60deg + var(--py, 0deg))) rotateZ(calc(-32deg + var(--sway) + var(--px, 0deg)));
-    animation: sway 14s ease-in-out infinite alternate;
-    transition: transform .6s var(--ease);
+    transform: rotateX(calc(var(--tilt) + var(--py))) rotateY(calc(var(--sway) + var(--px)));
+    animation: sway 12s ease-in-out infinite alternate;
   }
-  @keyframes sway { from { --sway: -7deg; } to { --sway: 7deg; } }
+  @keyframes sway { from { --sway: -24deg; } to { --sway: 24deg; } }
 
-  /* блок ступени: верх, четыре стороны */
-  .step {
-    position: absolute; top: 0; left: calc(var(--i) * var(--run));
-    width: var(--run); height: var(--d);
-    --h: calc((var(--i) + 1) * var(--rise));
-    transform-style: preserve-3d; transform-origin: 0 0 0;
-    animation: grow 1s var(--ease) both; animation-delay: calc(var(--i) * .12s + .2s);
-  }
-  @keyframes grow { from { transform: scale3d(1, 1, .02); } }
-  .step > i { position: absolute; left: 0; top: 0; transform-origin: 0 0 0; }
-  .step .top {
-    width: var(--run); height: var(--d); transform: translateZ(var(--h));
-    background: linear-gradient(135deg, #38313a, #221e24);
-    box-shadow: inset 0 0 0 1px rgba(240,234,238,.10);
-    animation: lit 5s ease-in-out infinite; animation-delay: calc(var(--i) * .35s + 1.4s);
-  }
-  @keyframes lit { 0%, 70%, 100% { filter: brightness(1); } 12% { filter: brightness(1.7); } }
-  .step .front { width: var(--run); height: var(--h); transform: translateY(var(--d)) rotateX(90deg); background: linear-gradient(to bottom, #0e0c0f, #1c181d); }
-  .step .back  { width: var(--run); height: var(--h); transform: rotateX(90deg); background: #141115; }
-  .step .left  { width: var(--h); height: var(--d); transform: rotateY(-90deg); background: linear-gradient(to left, #2a242b, #151216); }
-  .step .right { width: var(--h); height: var(--d); transform: translateX(var(--run)) rotateY(-90deg); background: linear-gradient(to left, #1f1a20, #0f0d10); }
-  /* верхняя ступень — розовая, как в логотипе */
-  .step.peak .top {
-    background: linear-gradient(135deg, #ff7d9a, #cf3359);
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,.25), 0 0 60px rgba(240,86,122,.55);
-    animation: none;
-  }
-  .step.peak .front { background: linear-gradient(to bottom, #6e1c33, #a0284a); }
-  .step.peak .left, .step.peak .right { background: linear-gradient(to left, #8a2442, #4a1324); }
-  .step .top span {
-    position: absolute; left: 30px; top: 12px; transform-origin: 0 0; transform: rotate(90deg);
-    font-size: 13px; font-weight: 500; color: rgba(240,234,238,.75); white-space: nowrap;
-  }
-  .step.peak .top span { color: #fff; }
+  /* коробка: шесть граней вокруг центра */
+  .box { position: absolute; transform-style: preserve-3d; }
+  .box > i { position: absolute; left: 50%; top: 50%; backface-visibility: hidden; }
+  .box .f  { width: var(--w); height: var(--h); margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2); transform: translateZ(calc(var(--d) / 2)); }
+  .box .bk { width: var(--w); height: var(--h); margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2); transform: rotateY(180deg) translateZ(calc(var(--d) / 2)); }
+  .box .l  { width: var(--d); height: var(--h); margin: calc(var(--h) / -2) 0 0 calc(var(--d) / -2); transform: rotateY(-90deg) translateZ(calc(var(--w) / 2)); }
+  .box .r  { width: var(--d); height: var(--h); margin: calc(var(--h) / -2) 0 0 calc(var(--d) / -2); transform: rotateY(90deg) translateZ(calc(var(--w) / 2)); }
+  .box .t  { width: var(--w); height: var(--d); margin: calc(var(--d) / -2) 0 0 calc(var(--w) / -2); transform: rotateX(90deg) translateZ(calc(var(--h) / 2)); }
+  .box .b  { width: var(--w); height: var(--d); margin: calc(var(--d) / -2) 0 0 calc(var(--w) / -2); transform: rotateX(-90deg) translateZ(calc(var(--h) / 2)); }
 
-  /* тень лестницы на полу */
-  .floor-shadow { position: absolute; left: -30%; top: -40%; width: 160%; height: 180%; transform: translateZ(-1px); background: radial-gradient(closest-side, rgba(0,0,0,.55), transparent); }
+  /* светлый «перламутр», как белые части логотипа */
+  .box .f  { background: linear-gradient(180deg, #fbf7f9, #d8cfd5); box-shadow: inset 0 0 0 1px rgba(255,255,255,.5); }
+  .box .t  { background: linear-gradient(180deg, #ffffff, #e9e2e7); }
+  .box .l, .box .r { background: linear-gradient(180deg, #a59ba2, #6f666d); }
+  .box .bk, .box .b { background: #4d464c; }
+  .box.pink .f { background: linear-gradient(180deg, #ff8aa5, #e0446a); box-shadow: inset 0 0 0 1px rgba(255,255,255,.35), 0 0 70px rgba(240,86,122,.6); }
+  .box.pink .t { background: #ffa3b8; }
+  .box.pink .l, .box.pink .r { background: linear-gradient(180deg, #c23a5c, #8a2442); }
+  .box.pink .bk, .box.pink .b { background: #6e1c33; }
+  .box .f span { position: absolute; inset: 0; display: grid; place-items: center; font-size: 16px; font-weight: 500; color: #2a2329; white-space: nowrap; }
+  .box.pink .f span { color: #fff; }
 
-  /* подарки вокруг */
-  .gift {
+  /* сборка на загрузке: опоры вырастают, перекладины выезжают из глубины */
+  .leg { animation: leg 1.1s var(--ease) both; }
+  @keyframes leg { from { opacity: 0; transform: var(--pos) scaleY(.05); } }
+  .rung { animation: rung 1s var(--ease) both; animation-delay: calc(.5s + var(--n) * .14s); }
+  @keyframes rung { from { opacity: 0; transform: var(--pos) translateZ(-260px); } }
+  .rung.pink { animation: rung 1s var(--ease) both, beat 3.2s ease-in-out 2s infinite; animation-delay: calc(.5s + var(--n) * .14s), 2.2s; }
+  @keyframes beat { 50% { transform: var(--pos) translateZ(14px); } }
+
+  .shadow3d { position: absolute; left: -300px; top: 190px; width: 600px; height: 260px; transform: rotateX(90deg); background: radial-gradient(closest-side, rgba(0,0,0,.6), transparent); }
+
+  /* подарки TikTok в той же глубине, всегда смотрят на зрителя */
+  .gift3d {
+    position: absolute; width: var(--s); height: var(--s); margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+    transform: translate3d(var(--x), var(--y), var(--z)) rotateY(calc((var(--sway) + var(--px)) * -1)) rotateX(calc((var(--tilt) + var(--py)) * -1));
+    animation: pop .9s var(--ease) both; animation-delay: calc(1s + var(--n) * .08s);
+  }
+  @keyframes pop { from { opacity: 0; } }
+  .gift3d img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 18px 24px rgba(0,0,0,.45)); animation: float 7s ease-in-out infinite; animation-delay: calc(var(--n) * -.9s); }
+  .gift3d.far img { filter: blur(1.5px) drop-shadow(0 12px 18px rgba(0,0,0,.4)) brightness(.8); }
+  @keyframes float { 50% { transform: translateY(-14px) rotate(6deg); } }
+  @media (max-width: 899px) { .gift3d.desk { display: none; } }
+
+  /* плашки событий эфира поверх сцены */
+  .chip {
     position: absolute; z-index: 2; display: flex; align-items: center; gap: 6px;
     padding: 8px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; white-space: nowrap;
     background: rgba(25,22,26,.72); border: 1px solid var(--line-strong);
     backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
     animation: bob 6s ease-in-out infinite; transition: translate .6s var(--ease);
   }
-  .gift .e { font-size: 20px; line-height: 1; }
-  .gift b { color: var(--pink); font-weight: 600; }
-  .g1 { left: 6%; top: 14%; }
-  .g2 { right: 4%; top: 8%; animation-delay: -2s; }
-  .g3 { right: 8%; top: 70%; animation-delay: -4s; }
-  .g4 { left: 10%; top: 78%; animation-delay: -1s; }
-  .spark { position: absolute; z-index: 2; font-size: 26px; animation: drift 9s ease-in-out infinite; }
-  .s1 { left: 30%; top: 4%; } .s2 { right: 24%; top: 34%; animation-delay: -3s; font-size: 20px; } .s3 { left: 22%; top: 56%; animation-delay: -6s; font-size: 22px; }
+  .chip b { color: var(--pink); font-weight: 600; }
+  .ch1 { left: 4%; top: 10%; }
+  .ch2 { right: 0; top: 86%; animation-delay: -2s; }
+  .ch3 { right: 10%; top: 4%; animation-delay: -4s; }
   @keyframes bob { 50% { transform: translateY(-10px); } }
-  @keyframes drift { 50% { transform: translate(8px, -16px) rotate(10deg); } }
 
   .hero-inner { position: relative; z-index: 3; align-self: end; }
   .hero h1 { margin: 0; font-weight: 500; font-size: 44px; line-height: 1.02; letter-spacing: -.03em; }
@@ -143,7 +142,7 @@
     .hero { grid-template-rows: none; grid-template-columns: 1fr 1.1fr; align-items: center; gap: 32px; padding: 80px max(var(--gutter), calc((100vw - 1280px) / 2 + var(--gutter))) 64px; }
     .hero-inner { grid-column: 1; grid-row: 1; align-self: center; padding: 0; }
     .stage { grid-column: 2; grid-row: 1; height: 640px; }
-    .persp { transform: scale(1.1); }
+    .persp { transform: none; }
     .hero h1 { font-size: 72px; }
     .hero h1 span { font-size: 28px; }
     .hero .lead { font-size: 18px; }
@@ -168,21 +167,10 @@
 
 <section class="hero">
   <div class="stage" aria-hidden="true">
-    <div class="persp">
-      <div class="stair" id="stair">
-        <i class="floor-shadow"></i>
-        <div class="step" style="--i:0"><i class="back"></i><i class="left"></i><i class="right"></i><i class="front"></i><i class="top"><span>Старт</span></i></div>
-        <div class="step" style="--i:1"><i class="back"></i><i class="left"></i><i class="right"></i><i class="front"></i><i class="top"><span>Первый эфир</span></i></div>
-        <div class="step" style="--i:2"><i class="back"></i><i class="left"></i><i class="right"></i><i class="front"></i><i class="top"><span>Аудитория</span></i></div>
-        <div class="step" style="--i:3"><i class="back"></i><i class="left"></i><i class="right"></i><i class="front"></i><i class="top"><span>Доход</span></i></div>
-        <div class="step peak" style="--i:4"><i class="back"></i><i class="left"></i><i class="right"></i><i class="front"></i><i class="top"><span>Агентство</span></i></div>
-      </div>
-    </div>
-    <div class="gift g1" data-depth="18"><span class="e">🌹</span>роза от <b>katya</b></div>
-    <div class="gift g2" data-depth="26"><span class="e">🦁</span><b>+500</b></div>
-    <div class="gift g3" data-depth="22"><span class="e">👀</span>1 248 зрителей</div>
-    <div class="gift g4" data-depth="14"><span class="e">⚔️</span>баттл <b>2:14</b></div>
-    <span class="spark s1">💎</span><span class="spark s2">🚀</span><span class="spark s3">👑</span>
+    <div class="persp"><div class="scene3d" id="scene3d"></div></div>
+    <div class="chip ch1" data-depth="18">Роза от <b>katya</b></div>
+    <div class="chip ch2" data-depth="24">1 248 зрителей</div>
+    <div class="chip ch3" data-depth="14">Баттл <b>2:14</b></div>
   </div>
 
   <div class="wrap hero-inner">
@@ -224,13 +212,46 @@
 </nav>
 
 <script>
-  // лестница поворачивается за курсором или наклоном телефона, подарки смещаются в глубину
-  const stair = document.getElementById('stair');
-  const gifts = [...document.querySelectorAll('.gift[data-depth]')];
+  // стремянка из логотипа: две опоры буквы «А» и перекладины, верхняя розовая
+  const scene = document.getElementById('scene3d');
+  const H = 440, B = 240, T = 50, D = 72;            // высота, полуширина основания, толщина и глубина опор
+  const box = (cls, w, h, d, pos, label = '', vars = '') => {
+    const el = document.createElement('div');
+    el.className = 'box ' + cls;
+    el.style.cssText = `--w:${w}px;--h:${h}px;--d:${d}px;--pos:${pos};transform:${pos};${vars}`;
+    el.innerHTML = `<i class="bk"></i><i class="b"></i><i class="l"></i><i class="r"></i><i class="t"></i><i class="f">${label ? `<span>${label}</span>` : ''}</i>`;
+    scene.appendChild(el);
+  };
+  const L = Math.hypot(H, B), th = Math.atan(B / H) * 180 / Math.PI;
+  box('leg', T, L, D, `translate3d(${-B / 2}px,0,0) rotateZ(${th}deg)`);
+  box('leg', T, L, D, `translate3d(${B / 2}px,0,0) rotateZ(${-th}deg)`);
+  const bars = [[.92, 'Старт'], [.76, 'Первый эфир'], [.60, 'Доход'], [.44, 'Агентство']];
+  bars.forEach(([f, label], n) => {
+    const w = 2 * B * f - T * 1.3, y = -H / 2 + H * f;
+    box('rung' + (n === bars.length - 1 ? ' pink' : ''), w, 40, D - 16, `translate3d(0,${y}px,0)`, label, `--n:${n}`);
+  });
+  const shadow = document.createElement('i'); shadow.className = 'shadow3d'; scene.prepend(shadow);
+
+  // подарки: x, y, z, размер; дальние чуть размыты
+  const gifts = [
+    ['lion', -300, 150, 140, 160], ['rose', 250, -180, 90, 104], ['perfume', 300, 90, -180, 124],
+    ['heart', -240, -170, -60, 80], ['note', 90, -300, -240, 92], ['like', -280, -290, -300, 76],
+    ['hearts', 250, 250, 180, 108], ['star', -110, -320, 150, 76], ['rose-kiss', -30, 300, 230, 96, 'desk'],
+  ];
+  gifts.forEach(([name, x, y, z, size, only = ''], n) => {
+    const g = document.createElement('div');
+    g.className = 'gift3d' + (z < -100 ? ' far' : '') + (only ? ' ' + only : '');
+    g.style.cssText = `--x:${x}px;--y:${y}px;--z:${z}px;--s:${size}px;--n:${n}`;
+    g.innerHTML = `<img src="../assets/gifts/${name}.png" alt="">`;
+    scene.appendChild(g);
+  });
+
+  // поворот за курсором или наклоном телефона, плашки смещаются в глубину
+  const chips = [...document.querySelectorAll('.chip[data-depth]')];
   const tilt = (x, y) => {
-    stair.style.setProperty('--px', x * 14 + 'deg');
-    stair.style.setProperty('--py', -y * 8 + 'deg');
-    gifts.forEach(g => g.style.translate = `${x * g.dataset.depth}px ${y * g.dataset.depth}px`);
+    scene.style.setProperty('--px', x * 30 + 'deg');
+    scene.style.setProperty('--py', -y * 14 + 'deg');
+    chips.forEach(c => c.style.translate = `${x * c.dataset.depth}px ${y * c.dataset.depth}px`);
   };
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
     addEventListener('pointermove', e => { if (e.pointerType === 'mouse') tilt(e.clientX / innerWidth - .5, e.clientY / innerHeight - .5); });
