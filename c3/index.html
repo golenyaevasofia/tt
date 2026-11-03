@@ -124,9 +124,9 @@
   .rung-btn.on { background: var(--raised); border-color: var(--line-strong); }
   .rung-btn.on .num { background: var(--pink-fill); color: #fff; border-color: var(--pink-fill); }
   .rung-btn.on .d { display: block; }
-  .rung-btn:nth-child(2) { margin: 0 4%; }
-  .rung-btn:nth-child(3) { margin: 0 8%; }
-  .rung-btn:nth-child(4) { margin: 0 12%; }
+  .rung-btn:nth-child(2) { margin: 0 7%; }
+  .rung-btn:nth-child(3) { margin: 0 14%; }
+  .rung-btn:nth-child(4) { margin: 0 21%; }
 
   .progress { display: flex; align-items: center; gap: 12px; margin-top: 12px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
   .progress .bar { flex: 1; height: 2px; border-radius: 1px; background: var(--line-strong); overflow: hidden; }
@@ -149,9 +149,12 @@
     .hero .lead { font-size: 18px; }
     .cta { display: flex; }
     .path h2 { font-size: 52px; }
-    .path-grid { grid-template-columns: 1fr 340px; gap: 80px; align-items: stretch; }
-    .path-text .ladder-wrap { margin-top: auto; }
-    .phone { width: 340px; margin: 0; }
+    .path-grid { grid-template-columns: 1fr 280px; gap: 80px; align-items: stretch; }
+    .path-text .ladder-wrap { flex: 1; display: flex; flex-direction: column; }
+    .ladder { flex: 1; }
+    .rung-btn { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; padding-top: 20px; padding-bottom: 20px; }
+    .rung-btn .num { top: 50%; margin-top: -12px; }
+    .phone { width: 280px; margin: 0; }
   }
 </style>
 </head>
