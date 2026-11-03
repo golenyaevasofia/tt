@@ -39,11 +39,15 @@
     transition: translate .6s var(--ease); animation: pop .8s var(--ease) both; animation-delay: calc(.4s + var(--n) * .08s);
   }
   @keyframes pop { from { opacity: 0; transform: scale(.6); } }
-  .gift img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 16px 22px rgba(0,0,0,.45)); animation: float 7s ease-in-out infinite; animation-delay: calc(var(--n) * -.9s); }
+  .gift img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 16px 22px rgba(0,0,0,.45)); animation: float 5s ease-in-out infinite; animation-delay: calc(var(--n) * -.7s); }
   .gift.far img { filter: blur(1.5px) brightness(.8) drop-shadow(0 10px 16px rgba(0,0,0,.4)); }
-  @keyframes float { 50% { transform: translateY(-14px) rotate(6deg); } }
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    30% { transform: translate(8px, -24px) rotate(12deg) scale(1.08); }
+    65% { transform: translate(-10px, -8px) rotate(-10deg) scale(.95); }
+  }
   @media (max-width: 899px) {
-    .gift { width: calc(var(--s) * .55); height: calc(var(--s) * .55); margin: calc(var(--s) * -.275) 0 0 calc(var(--s) * -.275); }
+    .gift { width: calc(var(--s) * .62); height: calc(var(--s) * .62); margin: calc(var(--s) * -.31) 0 0 calc(var(--s) * -.31); }
     .gift.desk { display: none; }
   }
 
@@ -179,9 +183,12 @@
   const gifts = [
     ['lion', 12, 66, 170, 30, 'desk'], ['rose', 86, 18, 112, 22], ['perfume', 88, 64, 130, -10, 'desk'],
     ['heart', 14, 20, 92, 14], ['note', 66, 10, 88, -14], ['like', 32, 9, 72, -18],
-    ['hearts', 78, 86, 116, 26], ['star', 7, 44, 80, 18, 'desk'], ['rose-kiss', 24, 88, 100, 24],
+    ['hearts', 78, 86, 116, 26], ['star', 7, 44, 80, 18], ['rose-kiss', 24, 88, 100, 24],
   ];
+  const mobile = innerWidth < 900;
+  const mobilePos = { heart: [16, 22], note: [52, 16], rose: [84, 22], like: [14, 72], star: [86, 70], hearts: [80, 84], 'rose-kiss': [26, 86] };
   gifts.forEach(([name, x, y, size, depth, only = ''], n) => {
+    if (mobile && mobilePos[name]) [x, y] = mobilePos[name];
     const g = document.createElement('div');
     g.className = 'gift' + (depth < 0 ? ' far' : '') + (only ? ' ' + only : '');
     g.dataset.depth = depth;
