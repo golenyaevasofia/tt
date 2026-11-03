@@ -43,9 +43,12 @@ button { font: inherit; color: inherit; cursor: pointer; border: 0; background: 
 
 /* шапка */
 .top {
-  position: absolute; inset: 0 0 auto; z-index: 20;
+  position: fixed; inset: 0 0 auto; z-index: 40;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 16px var(--gutter);
+  padding: 12px var(--gutter);
+  background: rgba(18, 16, 19, .55);
+  backdrop-filter: blur(18px) saturate(1.3); -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  border-bottom: 1px solid var(--line);
 }
 .brand { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 16px; }
 .brand img { width: 28px; height: auto; }
@@ -129,7 +132,7 @@ button { font: inherit; color: inherit; cursor: pointer; border: 0; background: 
   :root { --gutter: 40px; }
   .nav { display: flex; }
   .burger { display: none; }
-  .top { padding: 24px var(--gutter); }
+  .top { padding: 16px var(--gutter); }
 }
 
 @media (prefers-reduced-motion: reduce) {

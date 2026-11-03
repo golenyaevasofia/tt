@@ -9,22 +9,93 @@
 <style>
   body { font-family: "Onest", system-ui, sans-serif; }
 
-  /* ---------- экран 1: лестница из логотипа ---------- */
-  .hero { position: relative; min-height: 100svh; overflow: hidden; display: grid; grid-template-rows: auto 1fr; gap: 32px; padding: 72px 0 96px; }
-
-  /* треугольник логотипа, внутри — эфир */
-  .mark { position: relative; width: min(100%, 360px); margin: 0 auto; aspect-ratio: 1.1 / 1; }
-  .tri { position: absolute; inset: 0; clip-path: polygon(50% 0, 100% 100%, 0 100%); background: var(--card); }
-  .tri video { width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; filter: brightness(.78); }
-  .steps { position: absolute; inset: 0; pointer-events: none; }
-  .steps i {
-    position: absolute; left: 50%; height: 4.5%; border-radius: 2px; background: var(--text);
-    transform: translateX(-50%) scaleX(0); animation: rung .5s var(--ease) forwards;
+  /* ---------- экран 1: объёмная лестница ---------- */
+  .hero { position: relative; min-height: 100svh; overflow: hidden; display: grid; grid-template-rows: auto 1fr; padding: 64px 0 96px; }
+  .hero::before {
+    content: ""; position: absolute; inset: -20%; pointer-events: none;
+    background:
+      radial-gradient(30% 26% at 55% 28%, rgba(240,86,122,.32), transparent 70%),
+      radial-gradient(26% 24% at 78% 46%, rgba(111,140,255,.28), transparent 70%),
+      radial-gradient(34% 30% at 30% 60%, rgba(150,90,200,.14), transparent 70%);
+    animation: glow 16s ease-in-out infinite alternate;
   }
-  .steps i:nth-child(1) { top: 52%; width: 22%; background: var(--pink); animation-delay: .6s; }
-  .steps i:nth-child(2) { top: 66%; width: 36%; animation-delay: .45s; }
-  .steps i:nth-child(3) { top: 80%; width: 50%; animation-delay: .3s; }
-  @keyframes rung { to { transform: translateX(-50%) scaleX(1); } }
+  @keyframes glow {
+    50% { transform: translate(-6%, 4%) scale(1.12) rotate(5deg); }
+    to { transform: translate(5%, -4%) scale(1.04) rotate(-4deg); }
+  }
+
+  .stage { position: relative; z-index: 1; height: 400px; }
+  .persp { position: absolute; inset: 0; perspective: 1400px; perspective-origin: 50% 20%; transform: scale(.66); }
+
+  @property --sway { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+  .stair {
+    --run: 76px; --d: 180px; --rise: 40px;
+    position: absolute; left: 50%; top: 58%;
+    width: calc(var(--run) * 5); height: var(--d);
+    margin-left: calc(var(--run) * -2.5); margin-top: calc(var(--d) / -2);
+    transform-style: preserve-3d;
+    transform: rotateX(calc(60deg + var(--py, 0deg))) rotateZ(calc(-32deg + var(--sway) + var(--px, 0deg)));
+    animation: sway 14s ease-in-out infinite alternate;
+    transition: transform .6s var(--ease);
+  }
+  @keyframes sway { from { --sway: -7deg; } to { --sway: 7deg; } }
+
+  /* блок ступени: верх, четыре стороны */
+  .step {
+    position: absolute; top: 0; left: calc(var(--i) * var(--run));
+    width: var(--run); height: var(--d);
+    --h: calc((var(--i) + 1) * var(--rise));
+    transform-style: preserve-3d; transform-origin: 0 0 0;
+    animation: grow 1s var(--ease) both; animation-delay: calc(var(--i) * .12s + .2s);
+  }
+  @keyframes grow { from { transform: scale3d(1, 1, .02); } }
+  .step > i { position: absolute; left: 0; top: 0; transform-origin: 0 0 0; }
+  .step .top {
+    width: var(--run); height: var(--d); transform: translateZ(var(--h));
+    background: linear-gradient(135deg, #38313a, #221e24);
+    box-shadow: inset 0 0 0 1px rgba(240,234,238,.10);
+    animation: lit 5s ease-in-out infinite; animation-delay: calc(var(--i) * .35s + 1.4s);
+  }
+  @keyframes lit { 0%, 70%, 100% { filter: brightness(1); } 12% { filter: brightness(1.7); } }
+  .step .front { width: var(--run); height: var(--h); transform: translateY(var(--d)) rotateX(90deg); background: linear-gradient(to bottom, #0e0c0f, #1c181d); }
+  .step .back  { width: var(--run); height: var(--h); transform: rotateX(90deg); background: #141115; }
+  .step .left  { width: var(--h); height: var(--d); transform: rotateY(-90deg); background: linear-gradient(to left, #2a242b, #151216); }
+  .step .right { width: var(--h); height: var(--d); transform: translateX(var(--run)) rotateY(-90deg); background: linear-gradient(to left, #1f1a20, #0f0d10); }
+  /* верхняя ступень — розовая, как в логотипе */
+  .step.peak .top {
+    background: linear-gradient(135deg, #ff7d9a, #cf3359);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.25), 0 0 60px rgba(240,86,122,.55);
+    animation: none;
+  }
+  .step.peak .front { background: linear-gradient(to bottom, #6e1c33, #a0284a); }
+  .step.peak .left, .step.peak .right { background: linear-gradient(to left, #8a2442, #4a1324); }
+  .step .top span {
+    position: absolute; left: 30px; top: 12px; transform-origin: 0 0; transform: rotate(90deg);
+    font-size: 13px; font-weight: 500; color: rgba(240,234,238,.75); white-space: nowrap;
+  }
+  .step.peak .top span { color: #fff; }
+
+  /* тень лестницы на полу */
+  .floor-shadow { position: absolute; left: -30%; top: -40%; width: 160%; height: 180%; transform: translateZ(-1px); background: radial-gradient(closest-side, rgba(0,0,0,.55), transparent); }
+
+  /* подарки вокруг */
+  .gift {
+    position: absolute; z-index: 2; display: flex; align-items: center; gap: 6px;
+    padding: 8px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; white-space: nowrap;
+    background: rgba(25,22,26,.72); border: 1px solid var(--line-strong);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    animation: bob 6s ease-in-out infinite; transition: translate .6s var(--ease);
+  }
+  .gift .e { font-size: 20px; line-height: 1; }
+  .gift b { color: var(--pink); font-weight: 600; }
+  .g1 { left: 6%; top: 14%; }
+  .g2 { right: 4%; top: 8%; animation-delay: -2s; }
+  .g3 { right: 8%; top: 70%; animation-delay: -4s; }
+  .g4 { left: 10%; top: 78%; animation-delay: -1s; }
+  .spark { position: absolute; z-index: 2; font-size: 26px; animation: drift 9s ease-in-out infinite; }
+  .s1 { left: 30%; top: 4%; } .s2 { right: 24%; top: 34%; animation-delay: -3s; font-size: 20px; } .s3 { left: 22%; top: 56%; animation-delay: -6s; font-size: 22px; }
+  @keyframes bob { 50% { transform: translateY(-10px); } }
+  @keyframes drift { 50% { transform: translate(8px, -16px) rotate(10deg); } }
 
   .hero-inner { position: relative; z-index: 3; align-self: end; }
   .hero h1 { margin: 0; font-weight: 500; font-size: 44px; line-height: 1.02; letter-spacing: -.03em; }
@@ -33,10 +104,11 @@
   .cta { display: grid; gap: 8px; }
 
   /* ---------- экран 2: путь по ступеням ---------- */
-  .path { padding: 96px 0 128px; }
+  .path { padding: 64px 0 128px; }
   .path h2 { margin: 12px 0 16px; font-weight: 500; font-size: 32px; line-height: 1.08; letter-spacing: -.02em; }
-  .path .intro { color: var(--text-2); max-width: 36rem; margin: 0 0 40px; }
+  .path .intro { color: var(--text-2); max-width: 36rem; margin: 0 0 32px; }
   .path-grid { display: grid; gap: 32px; }
+  .path-text { display: flex; flex-direction: column; }
 
   .ladder { display: flex; flex-direction: column-reverse; gap: 8px; }
   .rung-btn {
@@ -52,7 +124,6 @@
   .rung-btn.on { background: var(--raised); border-color: var(--line-strong); }
   .rung-btn.on .num { background: var(--pink-fill); color: #fff; border-color: var(--pink-fill); }
   .rung-btn.on .d { display: block; }
-  /* ступени сужаются кверху, как в логотипе */
   .rung-btn:nth-child(2) { margin: 0 4%; }
   .rung-btn:nth-child(3) { margin: 0 8%; }
   .rung-btn:nth-child(4) { margin: 0 12%; }
@@ -61,21 +132,26 @@
   .progress .bar { flex: 1; height: 2px; border-radius: 1px; background: var(--line-strong); overflow: hidden; }
   .progress .bar span { display: block; height: 100%; background: var(--pink); transform-origin: left; transform: scaleX(.25); transition: transform .3s var(--ease); }
 
-  .media { aspect-ratio: 16 / 11; margin: 0; }
-  .note { margin: 16px 0 0; color: var(--text-2); }
+  .phone {
+    position: relative; width: min(100%, 300px); margin: 0 auto; aspect-ratio: 9 / 19;
+    border-radius: 36px; padding: 6px; background: #262126; border: 1px solid var(--line-strong);
+    box-shadow: 0 30px 60px rgba(0,0,0,.5), 0 0 80px rgba(240,86,122,.12);
+  }
+  .phone video { width: 100%; height: 100%; object-fit: cover; border-radius: 30px; }
 
   @media (min-width: 900px) {
-    .hero { grid-template-rows: none; grid-template-columns: 1fr 1fr; align-items: center; gap: 64px; padding: 96px 0 64px; max-width: 1280px; margin: 0 auto; padding-left: var(--gutter); padding-right: var(--gutter); }
+    .hero { grid-template-rows: none; grid-template-columns: 1fr 1.1fr; align-items: center; gap: 32px; padding: 80px max(var(--gutter), calc((100vw - 1280px) / 2 + var(--gutter))) 64px; }
     .hero-inner { grid-column: 1; grid-row: 1; align-self: center; padding: 0; }
-    .mark { grid-column: 2; grid-row: 1; width: 100%; max-width: 560px; }
-    .tri video { object-position: 50% 30%; }
+    .stage { grid-column: 2; grid-row: 1; height: 640px; }
+    .persp { transform: scale(1.1); }
     .hero h1 { font-size: 72px; }
     .hero h1 span { font-size: 28px; }
     .hero .lead { font-size: 18px; }
     .cta { display: flex; }
     .path h2 { font-size: 52px; }
-    .path-grid { grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
-    .media { position: sticky; top: 40px; aspect-ratio: 4 / 5; }
+    .path-grid { grid-template-columns: 1fr 340px; gap: 80px; align-items: stretch; }
+    .path-text .ladder-wrap { margin-top: auto; }
+    .phone { width: 340px; margin: 0; }
   }
 </style>
 </head>
@@ -88,9 +164,22 @@
 </header>
 
 <section class="hero">
-  <div class="mark" aria-hidden="true">
-    <div class="tri"><video src="../assets/video/battle-win.mp4" poster="../assets/video/battle-win.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
-    <div class="steps"><i></i><i></i><i></i></div>
+  <div class="stage" aria-hidden="true">
+    <div class="persp">
+      <div class="stair" id="stair">
+        <i class="floor-shadow"></i>
+        <div class="step" style="--i:0"><i class="back"></i><i class="left"></i><i class="right"></i><i class="front"></i><i class="top"><span>Старт</span></i></div>
+        <div class="step" style="--i:1"><i class="back"></i><i class="left"></i><i class="right"></i><i class="front"></i><i class="top"><span>Первый эфир</span></i></div>
+        <div class="step" style="--i:2"><i class="back"></i><i class="left"></i><i class="right"></i><i class="front"></i><i class="top"><span>Аудитория</span></i></div>
+        <div class="step" style="--i:3"><i class="back"></i><i class="left"></i><i class="right"></i><i class="front"></i><i class="top"><span>Доход</span></i></div>
+        <div class="step peak" style="--i:4"><i class="back"></i><i class="left"></i><i class="right"></i><i class="front"></i><i class="top"><span>Агентство</span></i></div>
+      </div>
+    </div>
+    <div class="gift g1" data-depth="18"><span class="e">🌹</span>роза от <b>katya</b></div>
+    <div class="gift g2" data-depth="26"><span class="e">🦁</span><b>+500</b></div>
+    <div class="gift g3" data-depth="22"><span class="e">👀</span>1 248 зрителей</div>
+    <div class="gift g4" data-depth="14"><span class="e">⚔️</span>баттл <b>2:14</b></div>
+    <span class="spark s1">💎</span><span class="spark s2">🚀</span><span class="spark s3">👑</span>
   </div>
 
   <div class="wrap hero-inner">
@@ -104,13 +193,13 @@
 </section>
 
 <section class="path" id="path">
-  <div class="wrap">
-    <span class="eyebrow"><span class="rungs"><i></i><i></i><i></i></span>Что такое TikTok-стримы</span>
-    <h2>Прямой эфир, где каждая ступень — результат</h2>
-    <p class="intro">TikTok-стримы — прямые эфиры внутри TikTok. Стример общается со зрителями, набирает аудиторию, получает подарки, участвует в баттлах и развивает личный бренд.</p>
+  <div class="wrap path-grid">
+    <div class="path-text">
+      <span class="eyebrow"><span class="rungs"><i></i><i></i><i></i></span>Что такое TikTok-стримы</span>
+      <h2>Прямой эфир, где каждая ступень — результат</h2>
+      <p class="intro">TikTok-стримы — прямые эфиры внутри TikTok. Стример общается со зрителями, набирает аудиторию, получает подарки, участвует в баттлах и развивает личный бренд. Для новичка это точка входа в онлайн-заработок.</p>
 
-    <div class="path-grid">
-      <div>
+      <div class="ladder-wrap">
         <div class="ladder" id="ladder">
           <button class="rung-btn on"><span class="num">1</span><div class="t">Освоить механику</div><div class="d">Как устроены эфиры и платформа, свет, звук, первые сценарии. На практикуме первый официальный эфир — уже на 4-й день</div></button>
           <button class="rung-btn"><span class="num">2</span><div class="t">Собрать аудиторию</div><div class="d">Регулярные эфиры и живое общение: зрители возвращаются к человеку, а не к картинке</div></button>
@@ -119,15 +208,10 @@
         </div>
         <div class="progress"><span id="lvl">Ступень 1 из 4</span><span class="bar"><span id="pbar"></span></span></div>
       </div>
+    </div>
 
-      <div>
-        <figure class="frame media">
-          <button class="play" aria-label="Смотреть видео"><svg class="icon"><use href="../assets/icons.svg#play"/></svg></button>
-          <span class="scrub"></span>
-          <div class="meta"><span>Никита о стримах</span><span>Видео</span></div>
-        </figure>
-        <p class="note">Для новичка это точка входа в онлайн-заработок: сначала осваиваешь механику, потом растёшь по просмотрам, подписчикам и доходу.</p>
-      </div>
+    <div class="phone">
+      <video src="../assets/video/battle-lion.mp4" poster="../assets/video/battle-lion.jpg" autoplay muted loop playsinline preload="metadata"></video>
     </div>
   </div>
 </section>
@@ -137,7 +221,20 @@
 </nav>
 
 <script>
-  // подъём по ступеням: выбранная раскрывается, пройденные отмечаются
+  // лестница поворачивается за курсором или наклоном телефона, подарки смещаются в глубину
+  const stair = document.getElementById('stair');
+  const gifts = [...document.querySelectorAll('.gift[data-depth]')];
+  const tilt = (x, y) => {
+    stair.style.setProperty('--px', x * 14 + 'deg');
+    stair.style.setProperty('--py', -y * 8 + 'deg');
+    gifts.forEach(g => g.style.translate = `${x * g.dataset.depth}px ${y * g.dataset.depth}px`);
+  };
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    addEventListener('pointermove', e => { if (e.pointerType === 'mouse') tilt(e.clientX / innerWidth - .5, e.clientY / innerHeight - .5); });
+    addEventListener('deviceorientation', e => { if (e.gamma != null) tilt(Math.max(-.5, Math.min(.5, e.gamma / 50)), Math.max(-.5, Math.min(.5, (e.beta - 45) / 50))); });
+  }
+
+  // подъём по ступеням во втором экране
   const rungs = [...document.querySelectorAll('.rung-btn')];
   const set = n => {
     rungs.forEach((r, i) => { r.classList.toggle('on', i === n); r.classList.toggle('done', i < n); });

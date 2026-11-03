@@ -7,10 +7,10 @@
 <link rel="stylesheet" href="../assets/fonts.css">
 <link rel="stylesheet" href="../assets/base.css">
 <style>
-  h1, h2, .fig { font-family: "Unbounded", sans-serif; }
+  h1, h2, .fig { font-family: "Manrope", sans-serif; font-weight: 700; }
 
   /* ---------- экран 1: стена эфиров ---------- */
-  .hero { position: relative; min-height: 100svh; overflow: hidden; display: flex; align-items: flex-end; padding: 0 0 96px; }
+  .hero { position: relative; min-height: 100svh; overflow: hidden; display: flex; align-items: flex-end; padding: 0 0 72px; }
   .wall {
     position: absolute; inset: -12% -24%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
     transform: rotate(-6deg);
@@ -26,16 +26,19 @@
   .shade { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg) 24%, rgba(18,16,19,.78) 56%, rgba(18,16,19,.55)); }
 
   .hero-inner { position: relative; z-index: 3; }
-  .hero h1 { margin: 0 0 16px; font-weight: 500; font-size: 40px; line-height: 1.04; letter-spacing: -.03em; }
+  .hero h1 { margin: 0 0 16px; font-size: 42px; line-height: 1.02; letter-spacing: -.035em; }
   .hero .lead { max-width: 36rem; margin: 0 0 24px; color: var(--text-2); font-size: 17px; }
   .cta { display: grid; gap: 8px; }
   .visit { display: none; }
 
   /* ---------- экран 2: симулятор эфира ---------- */
-  .sim { padding: 96px 0 128px; }
-  .sim h2 { margin: 12px 0 16px; font-weight: 400; font-size: 30px; line-height: 1.1; letter-spacing: -.02em; }
-  .sim .intro { color: var(--text-2); max-width: 36rem; margin: 0 0 40px; }
-  .sim-grid { display: grid; gap: 32px; }
+  .sim { padding: 48px 0 128px; }
+  .sim h2 { margin: 12px 0 16px; font-size: 30px; line-height: 1.08; letter-spacing: -.03em; }
+  .sim .intro { color: var(--text-2); max-width: 36rem; margin: 0; }
+  .sim-grid { display: grid; gap: 32px; grid-template-areas: "head" "device" "ledger"; }
+  .sim-head { grid-area: head; }
+  .device { grid-area: device; }
+  .ledger { grid-area: ledger; }
 
   .device {
     position: relative; width: min(100%, 300px); margin: 0 auto; aspect-ratio: 9 / 16;
@@ -43,7 +46,7 @@
     box-shadow: 0 24px 48px rgba(0,0,0,.45);
   }
   .stream { position: relative; height: 100%; border-radius: 26px; overflow: hidden; background: #141215; }
-  .stream > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .32; }
+  .stream > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .22; }
   .s-top { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; justify-content: space-between; align-items: center; z-index: 2; }
   .who { display: flex; align-items: center; gap: 8px; padding: 4px 12px 4px 4px; border-radius: 999px; background: rgba(12,11,13,.7); font-size: 13px; font-weight: 600; }
   .who i { width: 24px; height: 24px; border-radius: 50%; background: var(--raised); border: 1px solid var(--line-strong); }
@@ -67,18 +70,17 @@
     font-size: 12px; color: var(--text-2); font-variant-numeric: tabular-nums;
     transition: background-color .16s var(--ease), transform .16s var(--ease);
   }
-  .gift-btn .icon { width: 20px; height: 20px; color: var(--text); }
+  .gift-btn .emo { font-size: 22px; line-height: 1; }
   .gift-btn:hover { background: var(--raised); }
   .gift-btn:active { transform: scale(.97); }
 
-  .fly { position: absolute; z-index: 4; color: var(--pink); pointer-events: none; animation: fly 1s var(--ease) forwards; }
-  .fly .icon { width: 24px; height: 24px; }
-  @keyframes fly { to { transform: translateY(-160px); opacity: 0; } }
+  .fly { position: absolute; z-index: 4; font-size: 30px; pointer-events: none; animation: fly 1.2s var(--ease) forwards; }
+  @keyframes fly { to { transform: translate(var(--dx), -220px) scale(1.6); opacity: 0; } }
 
-  .ledger { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-content: start; }
+  .ledger { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-content: start; max-width: 640px; }
   .stat { padding: 20px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); }
   .stat .k { font-size: 13px; color: var(--muted); }
-  .stat .fig { font-size: 28px; font-weight: 500; line-height: 1; margin-top: 12px; font-variant-numeric: tabular-nums; }
+  .stat .fig { font-size: 32px; line-height: 1; margin-top: 12px; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
   .stat.key .fig { color: var(--pink); }
   .hint { grid-column: 1 / -1; font-size: 14px; color: var(--muted); margin: 4px 0 8px; }
   .explain { grid-column: 1 / -1; padding: 20px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); }
@@ -96,9 +98,10 @@
     .cta { display: flex; }
     .visit { display: block; justify-self: end; width: 280px; aspect-ratio: 9 / 19; border-radius: 24px; padding: 4px; background: #262126; border: 1px solid var(--line-strong); box-shadow: 0 24px 48px rgba(0,0,0,.5); }
     .visit video { width: 100%; height: 100%; object-fit: cover; border-radius: 20px; }
+    .sim { padding: 32px 0 128px; }
     .sim h2 { font-size: 48px; }
-    .sim-grid { grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
-    .device { margin: 0; justify-self: end; }
+    .sim-grid { grid-template-columns: 5fr 7fr; grid-template-areas: "device head" "device ledger"; grid-template-rows: auto 1fr; column-gap: 80px; row-gap: 32px; }
+    .device { width: 340px; margin: 0; justify-self: center; }
   }
 </style>
 </head>
@@ -131,31 +134,33 @@
 
 <section class="sim" id="sim">
   <div class="wrap">
-    <span class="eyebrow"><span class="rungs"><i></i><i></i><i></i></span>Что такое TikTok-стримы</span>
-    <h2>Отправь подарок и посмотри, как устроен эфир</h2>
-    <p class="intro">TikTok-стримы — прямые эфиры внутри TikTok. Стример общается со зрителями, получает подарки, участвует в баттлах и развивает личный бренд.</p>
-
     <div class="sim-grid">
+      <div class="sim-head">
+        <span class="eyebrow"><span class="rungs"><i></i><i></i><i></i></span>Что такое TikTok-стримы</span>
+        <h2>Отправь подарок и посмотри, как устроен эфир</h2>
+        <p class="intro">TikTok-стримы — прямые эфиры внутри TikTok. Стример общается со зрителями, получает подарки, участвует в баттлах и развивает личный бренд.</p>
+      </div>
+
       <div class="device">
         <div class="stream" id="stream">
           <video src="../assets/video/battle-win.mp4" poster="../assets/video/battle-win.jpg" autoplay muted loop playsinline preload="none" aria-hidden="true"></video>
           <div class="s-top">
             <span class="who"><i></i>твой эфир</span>
-            <span class="viewers"><svg class="icon"><use href="../assets/icons.svg#eye"/></svg><span id="viewers">312</span></span>
+            <span class="viewers">👀 <span id="viewers">312</span></span>
           </div>
           <div class="goal">
             <div class="goal-row"><span>Цель эфира</span><span><span id="goalNum">0</span> / 5 000</span></div>
             <div class="bar"><span id="goalBar"></span></div>
           </div>
           <div class="chat" id="chat">
-            <div class="msg"><b>lena_k</b>привет, откуда ты?</div>
-            <div class="msg"><b>dmitry</b>давай баттл</div>
+            <div class="msg"><b>lena_k</b>привет, откуда ты? 👋</div>
+            <div class="msg"><b>dmitry</b>давай баттл 🔥</div>
           </div>
           <div class="gifts">
-            <button class="gift-btn" data-icon="flower" data-name="розу" data-val="1"><svg class="icon"><use href="../assets/icons.svg#flower"/></svg>1</button>
-            <button class="gift-btn" data-icon="gem" data-name="кристалл" data-val="99"><svg class="icon"><use href="../assets/icons.svg#gem"/></svg>99</button>
-            <button class="gift-btn" data-icon="crown" data-name="корону" data-val="500"><svg class="icon"><use href="../assets/icons.svg#crown"/></svg>500</button>
-            <button class="gift-btn" data-icon="rocket" data-name="ракету" data-val="1000"><svg class="icon"><use href="../assets/icons.svg#rocket"/></svg>1 000</button>
+            <button class="gift-btn" data-gift="🌹" data-val="1"><span class="emo">🌹</span>1</button>
+            <button class="gift-btn" data-gift="💎" data-val="99"><span class="emo">💎</span>99</button>
+            <button class="gift-btn" data-gift="🦁" data-val="500"><span class="emo">🦁</span>500</button>
+            <button class="gift-btn" data-gift="🚀" data-val="1000"><span class="emo">🚀</span>1 000</button>
           </div>
         </div>
       </div>
@@ -201,7 +206,7 @@
   const stream = $('stream'), chat = $('chat');
   const fmt = n => n.toLocaleString('ru');
   const names = ['katya', 'max_live', 'anna.s', 'roma', 'vika', 'den'];
-  const lines = ['это так работает?', 'ещё', 'топ эфир', 'привет из Казани', 'го баттл'];
+  const lines = ['это так работает? 😮', 'ещё 🔥', 'топ эфир', 'привет из Казани 👋', 'го баттл ⚔️'];
 
   const push = (html, cls = '') => {
     const m = document.createElement('div'); m.className = 'msg ' + cls; m.innerHTML = html;
@@ -219,14 +224,14 @@
     $('goalNum').textContent = fmt(Math.min(coins, goalMax));
     $('goalBar').style.transform = `scaleX(${Math.max(.04, Math.min(1, coins / goalMax))})`;
 
-    const f = document.createElement('span'); f.className = 'fly';
-    f.innerHTML = `<svg class="icon"><use href="../assets/icons.svg#${b.dataset.icon}"/></svg>`;
+    const f = document.createElement('span'); f.className = 'fly'; f.textContent = b.dataset.gift;
     const r = b.getBoundingClientRect(), s = stream.getBoundingClientRect();
-    f.style.left = (r.left - s.left + r.width / 2 - 12) + 'px'; f.style.top = (r.top - s.top - 8) + 'px';
-    stream.appendChild(f); setTimeout(() => f.remove(), 1000);
+    f.style.left = (r.left - s.left + r.width / 2 - 15) + 'px'; f.style.top = (r.top - s.top - 8) + 'px';
+    f.style.setProperty('--dx', (Math.random() * 80 - 40) + 'px');
+    stream.appendChild(f); setTimeout(() => f.remove(), 1200);
 
-    push(`<b>${names[count % names.length]}</b>отправил(а) ${b.dataset.name}`, 'gift');
-    if (coins >= goalMax && !stream.dataset.done) { stream.dataset.done = 1; push('<b>эфир</b>цель достигнута', 'gift'); }
+    push(`<b>${names[count % names.length]}</b>отправил(а) ${b.dataset.gift}`, 'gift');
+    if (coins >= goalMax && !stream.dataset.done) { stream.dataset.done = 1; push('<b>🎉</b>цель эфира достигнута', 'gift'); }
   }));
 
   setInterval(() => push(`<b>${names[Math.floor(Math.random() * names.length)]}</b>${lines[Math.floor(Math.random() * lines.length)]}`), 3200);

@@ -10,7 +10,20 @@
   h1, h2 { font-family: "Inter Tight", sans-serif; }
 
   /* ---------- экран 1: эфир со стороны ---------- */
-  .hero { position: relative; min-height: 100svh; display: grid; grid-template-rows: 1fr auto; padding: 72px 0 96px; overflow: hidden; }
+  .hero { position: relative; min-height: 100svh; display: grid; grid-template-rows: 1fr auto; padding: 72px 0 88px; overflow: hidden; }
+  .hero::before {
+    content: ""; position: absolute; inset: -20%; pointer-events: none;
+    background:
+      radial-gradient(32% 28% at 62% 30%, rgba(240,86,122,.30), transparent 70%),
+      radial-gradient(28% 26% at 82% 58%, rgba(111,140,255,.26), transparent 70%),
+      radial-gradient(30% 30% at 30% 78%, rgba(240,86,122,.12), transparent 70%);
+    animation: glow 18s ease-in-out infinite alternate;
+  }
+  @keyframes glow {
+    50% { transform: translate(-5%, 4%) scale(1.1) rotate(4deg); }
+    to { transform: translate(4%, -3%) scale(1.04) rotate(-3deg); }
+  }
+  .scene, .hero-text { z-index: 1; }
 
   /* сцена: кольцевая лампа, телефон на штативе, пол студии */
   .scene { position: relative; min-height: 400px; }
@@ -25,17 +38,17 @@
   }
   .floor.layer { transition: none; }
   .ring {
-    left: 50%; top: 4%; width: 280px; height: 280px; margin-left: -140px; border-radius: 50%;
+    left: 50%; top: calc(4% + 10px); width: 300px; height: 300px; margin-left: -150px; border-radius: 50%;
     border: 8px solid #e9e1e5; opacity: .7;
   }
   /* свет от лампы падает на телефон — это часть сцены, а не декор */
   .lamp-light {
-    left: 50%; top: 4%; width: 280px; height: 280px; margin-left: -140px; border-radius: 50%;
+    left: 50%; top: calc(4% + 10px); width: 300px; height: 300px; margin-left: -150px; border-radius: 50%;
     background: radial-gradient(closest-side, rgba(233,225,229,.10), transparent);
   }
-  .tripod { left: 50%; top: calc(8% + 272px); width: 2px; height: 30%; margin-left: -1px; background: linear-gradient(#3a343b, transparent); }
+  .tripod { left: 50%; top: calc(4% + 320px); width: 2px; height: 30%; margin-left: -1px; background: linear-gradient(#3a343b, transparent); }
   .phone {
-    left: 50%; top: 8%; width: 136px; aspect-ratio: 1 / 2; margin-left: -68px;
+    left: 50%; top: 4%; width: 160px; aspect-ratio: 1 / 2; margin-left: -80px;
     border-radius: 24px; padding: 4px; background: #262126; border: 1px solid var(--line-strong);
     box-shadow: 0 24px 48px rgba(0,0,0,.5);
   }
@@ -50,9 +63,9 @@
   }
   .chip b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
   .chip .icon { color: var(--muted); }
-  .c1 { left: 4%; top: 36%; }
-  .c2 { right: 4%; top: 14%; }
-  .c3 { right: 6%; top: 54%; }
+  .c1 { left: 2%; top: 38%; }
+  .c2 { right: 2%; top: 12%; }
+  .c3 { right: 4%; top: 62%; }
 
   .hero-text { position: relative; z-index: 3; }
   .hero h1 { margin: 0; font-weight: 300; font-size: 44px; line-height: 1.04; letter-spacing: -.03em; }
@@ -66,6 +79,10 @@
   .what-grid { display: grid; gap: 32px; }
   .what-grid > div { order: -1; }
   .video-card { aspect-ratio: 4 / 5; margin: 0; }
+  .video-card video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+  .video-card::after { content: ""; position: absolute; inset: 60% 0 0; background: linear-gradient(transparent, rgba(12,11,13,.85)); }
+  .video-card .live { position: absolute; top: 16px; left: 16px; z-index: 1; }
+  .video-card .meta { z-index: 1; color: var(--text); }
   .p-lead { margin: 0 0 12px; font-size: 18px; line-height: 1.45; font-weight: 500; }
   .p-body { margin: 0 0 32px; color: var(--text-2); }
 
@@ -86,10 +103,15 @@
   @media (min-width: 900px) {
     .hero { grid-template-rows: none; grid-template-columns: 1fr 1fr; align-items: center; padding: 96px 0 64px; }
     .hero > .wrap { grid-column: 1; grid-row: 1; padding-right: 0; }
-    .scene { grid-column: 2; grid-row: 1; height: 100%; min-height: 640px; }
-    .ring, .lamp-light { width: 400px; height: 400px; margin-left: -200px; top: 10%; }
-    .phone { width: 180px; margin-left: -90px; top: 16%; }
-    .tripod { top: calc(16% + 360px); }
+    .scene { grid-column: 2; grid-row: 1; height: 100%; }
+    .scene { min-height: 760px; }
+    .ring, .lamp-light { width: 600px; height: 600px; margin-left: -300px; top: calc(10% - 30px); }
+    .phone { width: 270px; margin-left: -135px; top: 10%; border-radius: 36px; padding: 6px; }
+    .phone .frame { border-radius: 30px; }
+    .tripod { top: calc(10% + 540px); }
+    .c1 { left: -2%; top: 40%; }
+    .c2 { right: 0; top: 14%; }
+    .c3 { right: 2%; top: 68%; }
     .hero h1 { font-size: 72px; }
     .hero .lead { font-size: 19px; }
     .cta { display: flex; }
@@ -139,9 +161,9 @@
 <section class="what" id="what">
   <div class="wrap what-grid">
     <figure class="frame video-card">
-      <button class="play" aria-label="Смотреть видео"><svg class="icon"><use href="../assets/icons.svg#play"/></svg></button>
-      <span class="scrub"></span>
-      <div class="meta"><span>Никита о стримах</span><span>Видео</span></div>
+      <video src="../assets/video/battle-roses.mp4" poster="../assets/video/battle-roses.jpg" autoplay muted loop playsinline preload="metadata"></video>
+      <span class="live">Live</span>
+      <div class="meta"><span>Баттл в прямом эфире</span><span>0:18</span></div>
     </figure>
 
     <div>
