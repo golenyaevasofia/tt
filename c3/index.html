@@ -10,92 +10,71 @@
   body { font-family: "Onest", system-ui, sans-serif; }
 
   /* ---------- экран 1: лестница из логотипа ---------- */
-  .hero { position: relative; min-height: 100svh; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 0 92px; }
+  .hero { position: relative; min-height: 100svh; overflow: hidden; display: grid; grid-template-rows: auto 1fr; gap: 32px; padding: 72px 0 96px; }
 
-  /* фоновое «видео» в рамке-треугольнике: сюда встанет нарезка */
-  .bg {
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(50% 40% at 50% 30%, rgba(240,86,122,.22), transparent 70%),
-      radial-gradient(40% 35% at 80% 70%, rgba(111,140,255,.18), transparent 70%),
-      var(--bg);
-  }
-  .tri {
-    position: absolute; left: 50%; top: 9%; width: min(88vw, 620px); aspect-ratio: 1.1 / 1; transform: translateX(-50%);
-    clip-path: polygon(50% 0, 100% 100%, 0 100%); overflow: hidden;
-    background: linear-gradient(170deg, #2a1824, #11131d 60%, #172036);
-  }
-  .tri::before { content: ""; position: absolute; inset: 0; background: radial-gradient(40% 30% at 50% 55%, rgba(240,86,122,.5), transparent 70%); animation: breathe 6s ease-in-out infinite; }
-  @keyframes breathe { 50% { transform: scale(1.2) translateY(-6%); opacity: .6; } }
-  .tri .live { position: absolute; left: 50%; top: 38%; transform: translateX(-50%); }
-  .tri .cap { position: absolute; left: 0; right: 0; bottom: 4%; text-align: center; font-size: 12px; color: rgba(255,255,255,.6); }
-
-  /* ступени поверх треугольника */
-  .steps { position: absolute; left: 50%; top: 9%; width: min(88vw, 620px); aspect-ratio: 1.1 / 1; transform: translateX(-50%); pointer-events: none; }
+  /* треугольник логотипа, внутри — эфир */
+  .mark { position: relative; width: min(100%, 360px); margin: 0 auto; aspect-ratio: 1.1 / 1; }
+  .tri { position: absolute; inset: 0; clip-path: polygon(50% 0, 100% 100%, 0 100%); background: var(--card); }
+  .tri video { width: 100%; height: 100%; object-fit: cover; object-position: 50% 42%; filter: brightness(.78); }
+  .steps { position: absolute; inset: 0; pointer-events: none; }
   .steps i {
-    position: absolute; left: 50%; height: 4.5%; border-radius: 3px; transform: translateX(-50%) scaleX(0);
-    background: var(--text); box-shadow: 0 6px 18px rgba(0,0,0,.5);
-    animation: rung .7s cubic-bezier(.2,.8,.2,1) forwards;
+    position: absolute; left: 50%; height: 4.5%; border-radius: 2px; background: var(--text);
+    transform: translateX(-50%) scaleX(0); animation: rung .5s var(--ease) forwards;
   }
-  .steps i:nth-child(1) { top: 52%; width: 22%; background: var(--pink); box-shadow: 0 0 30px rgba(240,86,122,.6); animation-delay: 1.1s; }
-  .steps i:nth-child(2) { top: 66%; width: 36%; animation-delay: .8s; }
-  .steps i:nth-child(3) { top: 80%; width: 50%; animation-delay: .5s; }
+  .steps i:nth-child(1) { top: 52%; width: 22%; background: var(--pink); animation-delay: .6s; }
+  .steps i:nth-child(2) { top: 66%; width: 36%; animation-delay: .45s; }
+  .steps i:nth-child(3) { top: 80%; width: 50%; animation-delay: .3s; }
   @keyframes rung { to { transform: translateX(-50%) scaleX(1); } }
 
-  .hero-inner { position: relative; z-index: 3; }
-  .hero h1 { margin: 0; font-weight: 700; font-size: clamp(40px, 12vw, 120px); line-height: .95; letter-spacing: -.035em; }
-  .hero h1 span { display: block; font-weight: 300; color: var(--muted); font-size: .42em; letter-spacing: -.01em; margin-top: 10px; }
-  .hero p { margin: 18px 0 24px; max-width: 36ch; color: rgba(237,234,240,.78); }
-  .cta { display: flex; flex-direction: column; gap: 10px; }
-
-  .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
-  .tags span { font-size: 12px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); color: rgba(237,234,240,.8); }
+  .hero-inner { position: relative; z-index: 3; align-self: end; }
+  .hero h1 { margin: 0; font-weight: 500; font-size: 44px; line-height: 1.02; letter-spacing: -.03em; }
+  .hero h1 span { display: block; margin-top: 8px; font-weight: 400; font-size: 22px; line-height: 1.25; letter-spacing: -.01em; color: var(--text-2); }
+  .hero .lead { margin: 16px 0 24px; max-width: 36rem; color: var(--text-2); }
+  .cta { display: grid; gap: 8px; }
 
   /* ---------- экран 2: путь по ступеням ---------- */
-  .path { padding: 96px 0 140px; }
-  .eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-  .path h2 { margin: 12px 0 16px; font-weight: 500; font-size: clamp(30px, 7.5vw, 64px); line-height: 1.02; letter-spacing: -.03em; }
-  .path .intro { color: rgba(237,234,240,.75); max-width: 52ch; margin: 0 0 36px; }
-  .path-grid { display: grid; gap: 24px; }
+  .path { padding: 96px 0 128px; }
+  .path h2 { margin: 12px 0 16px; font-weight: 500; font-size: 32px; line-height: 1.08; letter-spacing: -.02em; }
+  .path .intro { color: var(--text-2); max-width: 36rem; margin: 0 0 40px; }
+  .path-grid { display: grid; gap: 32px; }
 
   .ladder { display: flex; flex-direction: column-reverse; gap: 8px; }
-  .rung {
-    position: relative; text-align: left; padding: 18px 18px 18px 64px; border-radius: 16px;
-    border: 1px solid var(--line); background: rgba(255,255,255,.02);
-    transition: background .3s, border-color .3s, transform .3s, margin .3s;
+  .rung-btn {
+    position: relative; text-align: left; padding: 16px 16px 16px 56px; border-radius: 14px;
+    border: 1px solid var(--line); background: var(--card);
+    transition: background-color .16s var(--ease), border-color .16s var(--ease);
   }
-  .rung .num { position: absolute; left: 18px; top: 18px; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; font-size: 13px; color: var(--muted); transition: .3s; }
-  .rung .t { font-weight: 500; font-size: 17px; }
-  .rung .d { max-height: 0; overflow: hidden; opacity: 0; color: rgba(237,234,240,.72); font-size: 14px; transition: max-height .4s ease, opacity .3s, margin .3s; }
-  .rung.done { border-color: rgba(237,234,240,.22); }
-  .rung.done .num { background: var(--text); color: var(--bg); border-color: var(--text); }
-  .rung.on { border-color: var(--pink); background: rgba(240,86,122,.07); }
-  .rung.on .num { background: var(--pink); color: #fff; border-color: var(--pink); }
-  .rung.on .d { max-height: 120px; opacity: 1; margin-top: 6px; }
-  /* ступени расширяются книзу — как в логотипе */
-  .rung:nth-child(1) { margin: 0 0; }
-  .rung:nth-child(2) { margin: 0 4%; }
-  .rung:nth-child(3) { margin: 0 8%; }
-  .rung:nth-child(4) { margin: 0 12%; }
+  .rung-btn:hover { background: var(--raised); }
+  .rung-btn .num { position: absolute; left: 16px; top: 16px; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line-strong); display: grid; place-items: center; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .rung-btn .t { font-weight: 500; font-size: 16px; line-height: 24px; }
+  .rung-btn .d { display: none; margin-top: 4px; color: var(--text-2); font-size: 14px; }
+  .rung-btn.done .num { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .rung-btn.on { background: var(--raised); border-color: var(--line-strong); }
+  .rung-btn.on .num { background: var(--pink-fill); color: #fff; border-color: var(--pink-fill); }
+  .rung-btn.on .d { display: block; }
+  /* ступени сужаются кверху, как в логотипе */
+  .rung-btn:nth-child(2) { margin: 0 4%; }
+  .rung-btn:nth-child(3) { margin: 0 8%; }
+  .rung-btn:nth-child(4) { margin: 0 12%; }
 
-  .progress { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--muted); margin-top: 6px; }
-  .progress .bar { flex: 1; height: 3px; border-radius: 2px; background: var(--line); overflow: hidden; }
-  .progress .bar span { display: block; height: 100%; width: 25%; background: var(--pink); transition: width .4s ease; }
+  .progress { display: flex; align-items: center; gap: 12px; margin-top: 12px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .progress .bar { flex: 1; height: 2px; border-radius: 1px; background: var(--line-strong); overflow: hidden; }
+  .progress .bar span { display: block; height: 100%; background: var(--pink); transform-origin: left; transform: scaleX(.25); transition: transform .3s var(--ease); }
 
-  .media { position: relative; aspect-ratio: 16 / 11; border-radius: var(--radius); overflow: hidden; background: linear-gradient(160deg, #22161f, #10121c 60%, #16203a); }
-  .media::before { content: ""; position: absolute; inset: 0; background: radial-gradient(45% 40% at 40% 45%, rgba(240,86,122,.35), transparent 70%); animation: breathe 7s ease-in-out infinite; }
-  .media .play { position: absolute; inset: 0; margin: auto; width: 72px; height: 72px; border-radius: 50%; border: 1px solid rgba(255,255,255,.5); display: grid; place-items: center; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
-  .media .play::before { content: ""; border-left: 17px solid #fff; border-top: 10px solid transparent; border-bottom: 10px solid transparent; margin-left: 5px; }
-  .media .cap { position: absolute; left: 16px; bottom: 14px; font-size: 13px; color: rgba(255,255,255,.75); }
-  .note { margin: 14px 0 0; color: rgba(237,234,240,.72); font-size: 15px; }
+  .media { aspect-ratio: 16 / 11; margin: 0; }
+  .note { margin: 16px 0 0; color: var(--text-2); }
 
   @media (min-width: 900px) {
-    .hero { justify-content: center; padding: 0; }
-    .tri, .steps { left: auto; right: 4%; top: 50%; transform: translateY(-46%); width: min(46vw, 640px); }
-    .hero-inner { max-width: 1280px; }
-    .hero-inner > div { max-width: 560px; }
-    .cta { flex-direction: row; }
-    .path-grid { grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+    .hero { grid-template-rows: none; grid-template-columns: 1fr 1fr; align-items: center; gap: 64px; padding: 96px 0 64px; max-width: 1280px; margin: 0 auto; padding-left: var(--gutter); padding-right: var(--gutter); }
+    .hero-inner { grid-column: 1; grid-row: 1; align-self: center; padding: 0; }
+    .mark { grid-column: 2; grid-row: 1; width: 100%; max-width: 560px; }
+    .tri video { object-position: 50% 30%; }
+    .hero h1 { font-size: 72px; }
+    .hero h1 span { font-size: 28px; }
+    .hero .lead { font-size: 18px; }
+    .cta { display: flex; }
+    .path h2 { font-size: 52px; }
+    .path-grid { grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
     .media { position: sticky; top: 40px; aspect-ratio: 4 / 5; }
   }
 </style>
@@ -105,49 +84,47 @@
 <header class="top">
   <a class="brand" href="../"><img src="../assets/logo.svg" alt="">Streamyanka</a>
   <nav class="nav"><a href="#path">О нас</a><a href="#">Направления</a><a href="#">Отзывы</a><a href="#">Контакты</a></nav>
-  <button class="burger" aria-label="Меню"><span></span></button>
+  <button class="burger" aria-label="Меню"><svg class="icon"><use href="../assets/icons.svg#menu"/></svg></button>
 </header>
 
 <section class="hero">
-  <div class="bg"></div>
-  <div class="tri" aria-hidden="true"><div class="grain"></div><span class="live">Live</span><span class="cap">видео-визитка</span></div>
-  <div class="steps" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="mark" aria-hidden="true">
+    <div class="tri"><video src="../assets/video/battle-win.mp4" poster="../assets/video/battle-win.jpg" autoplay muted loop playsinline preload="metadata"></video></div>
+    <div class="steps"><i></i><i></i><i></i></div>
+  </div>
 
   <div class="wrap hero-inner">
-    <div>
-      <div class="tags"><span>Практикум</span><span>Агентство</span></div>
-      <h1>Streamyanka<span>ступени роста в TikTok-эфирах</span></h1>
-      <p>Помогаем начать с нуля, выйти на первые результаты и расти дальше через агентство.</p>
-      <div class="cta">
-        <a class="btn btn-main" href="#">Оставить заявку</a>
-        <a class="btn btn-ghost" href="#path">Как это устроено</a>
-      </div>
+    <h1 class="rise">Streamyanka<span>практикум и агентство для TikTok-стримеров</span></h1>
+    <p class="lead rise">Помогаем начать с нуля, выйти на первые результаты и расти дальше через агентство</p>
+    <div class="cta rise">
+      <a class="btn btn-main" href="#">Оставить заявку</a>
+      <a class="btn btn-ghost" href="#path">Как это устроено</a>
     </div>
   </div>
 </section>
 
 <section class="path" id="path">
   <div class="wrap">
-    <span class="eyebrow">01 — Что такое TikTok-стримы</span>
-    <h2>Прямые эфиры, <br>где каждая ступень — результат</h2>
+    <span class="eyebrow"><span class="rungs"><i></i><i></i><i></i></span>Что такое TikTok-стримы</span>
+    <h2>Прямой эфир, где каждая ступень — результат</h2>
     <p class="intro">TikTok-стримы — прямые эфиры внутри TikTok. Стример общается со зрителями, набирает аудиторию, получает подарки, участвует в баттлах и развивает личный бренд.</p>
 
     <div class="path-grid">
       <div>
         <div class="ladder" id="ladder">
-          <button class="rung on"><span class="num">1</span><div class="t">Освоить механику</div><div class="d">Как устроены эфиры и платформа, свет, звук, первые сценарии. На практикуме первый официальный эфир — уже на 4-й день.</div></button>
-          <button class="rung"><span class="num">2</span><div class="t">Собрать аудиторию</div><div class="d">Регулярные эфиры и живое общение: зрители возвращаются за человеком, а не за картинкой.</div></button>
-          <button class="rung"><span class="num">3</span><div class="t">Подарки и баттлы</div><div class="d">Зрители отправляют подарки, баттлы с другими стримерами разгоняют вовлечение — так появляется доход.</div></button>
-          <button class="rung"><span class="num">4</span><div class="t">Доход и личный бренд</div><div class="d">Рост внутри агентства: официальные TikTok-кампании, конкурсы, призы, офлайн-встречи и сильная команда рядом.</div></button>
+          <button class="rung-btn on"><span class="num">1</span><div class="t">Освоить механику</div><div class="d">Как устроены эфиры и платформа, свет, звук, первые сценарии. На практикуме первый официальный эфир — уже на 4-й день</div></button>
+          <button class="rung-btn"><span class="num">2</span><div class="t">Собрать аудиторию</div><div class="d">Регулярные эфиры и живое общение: зрители возвращаются к человеку, а не к картинке</div></button>
+          <button class="rung-btn"><span class="num">3</span><div class="t">Подарки и баттлы</div><div class="d">Зрители отправляют подарки, баттлы с другими стримерами поднимают вовлечение, так появляется доход</div></button>
+          <button class="rung-btn"><span class="num">4</span><div class="t">Доход и личный бренд</div><div class="d">Рост внутри агентства: официальные TikTok-кампании, конкурсы, призы, офлайн-встречи и команда рядом</div></button>
         </div>
         <div class="progress"><span id="lvl">Ступень 1 из 4</span><span class="bar"><span id="pbar"></span></span></div>
       </div>
 
       <div>
-        <figure class="media" style="margin:0">
-          <div class="grain"></div>
-          <button class="play" aria-label="Смотреть видео"></button>
-          <span class="cap">Никита про стримы · 2:40</span>
+        <figure class="frame media">
+          <button class="play" aria-label="Смотреть видео"><svg class="icon"><use href="../assets/icons.svg#play"/></svg></button>
+          <span class="scrub"></span>
+          <div class="meta"><span>Никита о стримах</span><span>Видео</span></div>
         </figure>
         <p class="note">Для новичка это точка входа в онлайн-заработок: сначала осваиваешь механику, потом растёшь по просмотрам, подписчикам и доходу.</p>
       </div>
@@ -160,12 +137,12 @@
 </nav>
 
 <script>
-  // подъём по ступеням: выбранная подсвечивается, пройденные отмечаются
-  const rungs = [...document.querySelectorAll('.rung')];
+  // подъём по ступеням: выбранная раскрывается, пройденные отмечаются
+  const rungs = [...document.querySelectorAll('.rung-btn')];
   const set = n => {
     rungs.forEach((r, i) => { r.classList.toggle('on', i === n); r.classList.toggle('done', i < n); });
     document.getElementById('lvl').textContent = `Ступень ${n + 1} из ${rungs.length}`;
-    document.getElementById('pbar').style.width = (n + 1) / rungs.length * 100 + '%';
+    document.getElementById('pbar').style.transform = `scaleX(${(n + 1) / rungs.length})`;
   };
   rungs.forEach((r, i) => r.addEventListener('click', () => set(i)));
 </script>
